@@ -51,18 +51,18 @@ def GenStudyMaterial(prompt):
                 }
 
                 title: A short and meaningful title for the body of text.
-                summary: A summary of suitable size.
+                summary: A descriptive summary of suitable size.
                 Notes: Important points extracted from the text.
                 FC: Flashcards with key information having two sides i.e. front & back. 
                 MCQ: Questions with multiple choices and their correct/incorrect answers.
                 TOF: Questions with true/false answers.
 
-                Remember to provide proper choices in MCQ, make proper and concise Flash Cards of the key points (try making it fun by including fun facts or any other information that is breif but carries a lot of importance), write the summary strictly from a third person perspective, and prepare at least 5 questions of each category and at least 5 flash cards. Increase the number of questions and flash cards as much as possible. . Also make sure the output is strictly in proper json format. This is compulosry. And don't use any Sign numbers like "1", "a", "A" or "i" when writing questions or choices.
+                Remember to provide proper choices in MCQ, make proper and concise Flash Cards of the key points (try making it fun by including fun facts or any other information that is breif but carries a lot of importance), write the summary strictly from a third person perspective and don't miss any important parts, and prepare at least 5 questions of each category and at least 5 flash cards. Increase the number of questions and flash cards as much as possible. . Also make sure the output is strictly in proper json format. This is compulosry. And don't use any Sign numbers like "1", "a", "A" or "i" when writing questions or choices.
                 Now, proceed with reading and understanding the content of the text, correcting any errors, and preparing the JSON output data accordingly.
                 """,
             },
             {"role": "user", "content": prompt},
         ],
     )
-    output = completion.choices[0].message.content
-    return [output, completion]
+    response = completion
+    return response

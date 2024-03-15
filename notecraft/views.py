@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from .utils import ExtractText, GenStudyMaterial
 from .models import Chapter, User
 from django.contrib.auth import login, logout, authenticate
+from django.urls import reverse
 import time, json
 # Create your views here.
 
@@ -72,10 +73,10 @@ def text2QNA(request):
     if request.method == "POST":
         prompt = request.POST.get("ai_prompt")
         response = GenStudyMaterial(prompt)
-        output = response[0]
         count = 1
-        while count <= 5:
+        while count < 4:
             try:
+                output = response.choices[0].message.content
                 json_output = json.loads(output)
                 first_key = next(iter(json_output["MCQ"]))
                 if (
@@ -85,23 +86,33 @@ def text2QNA(request):
                     raise ValueError("Invalid Output: Wrong MCQ choices")
                 elif "Question1" in json_output["TOF"]:
                     raise ValueError("Invalid Output: Wrong TOF questions")
+                elif len(json_output["FC"]) < 5 or len(json_output["MCQ"]) < 5 or len(json_output["TOF"]) < 5:
+                    raise ValueError("Invalid Output: Not enough questions")
                 break
+
             except Exception as e:
                 count += 1
-                json_output = None
-                time.sleep(2)
+                if count > 3:
+                    json_output = None
+                    break
+
                 if "Wrong MCQ choices" in str(e):
-                    output = GenStudyMaterial(
+                    response = GenStudyMaterial(
                         prompt
                         + "\nRemember the choices in MCQ should not contain any sign numbers like '1', 'a' or 'i'."
                     )
                 elif "Wrong TOF questions" in str(e):
-                    output = GenStudyMaterial(
+                    response = GenStudyMaterial(
                         prompt
                         + "\nRemember to provide proper questions in TOF and MCQ. DOn't mistakenly write just 'Question1' or 'QuestionA' instead of actual questions."
                     )
-                else:
-                    output = GenStudyMaterial(prompt)
+                elif "Not enough questions" in str(e):
+                    response = GenStudyMaterial(
+                        prompt
+                        + "\nRemember to provide at least 5 flashcards, 5 MCQs and 5 TOFs."
+                    )
+                else:                
+                    response = GenStudyMaterial(prompt + "\n The output must be in proper JSON format.")
 
         if json_output:
             chapter = Chapter.objects.create(
@@ -117,7 +128,8 @@ def text2QNA(request):
             chapter.save()
         else:
             chapter = None
-        return redirect("chapter", id=chapter.id)
+            return HttpResponse(f"\n{count}\n\n{output}\n\n{response}")
+        return redirect(f"{reverse('chapter')}?studMat={chapter.id}")
     return redirect("index")
 
 def chapter(request):

@@ -1,26 +1,59 @@
 {% extends 'notecraft/layout.html' %} {% block body %} {% if studMat %}
-<div>{{studMat.title}}</div>
-<br />
-<div>{{studMat.summary}}</div>
-<br />
-{% for note in studMat.notes %}
-<div>{{note}}</div>
-{% endfor %}
-<br />
-{% for key,value in studMat.flashcards.items %}
-<div>{{key}} : {{value}}</div>
-{% endfor %}
-<br />
-{% for key,value in studMat.mcqs.items %}
-<div>{{key}}</div>
-{% for key1,value1 in value.items %}
-<div>{{key1}}</div>
-{% endfor%}
-<br />
-{% endfor%}
-<br />
-{% for key,value in studMat.tofs.items %}
-<div>{{key}}</div>
-{% endfor%} {% else %}
+<div class="flex flex-col gap-5 p-5">
+
+    <div class="text-xl font-bold m-auto">{{studMat.title}}</div>
+
+    <div>
+        <div class="font-bold text-lg my-3">Summary</div>
+        <div class="">{{studMat.summary}}</div>
+    </div>
+
+    <div>
+        <div class="text-xl font-bold my-3">Notes</div>
+        <div class="flex flex-col gap-3">
+            {% for note in studMat.notes %}
+            <div class="px-4 py-2 border rounded-lg font-semibold bg-gray-200">
+                {{note}}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="flex flex-wrap gap-10 justify-center my-5">
+        {% for key,value in studMat.flashcards.items %}
+        <div
+            class="p-3 border border-2 border-gray-400 rounded-lg h-48 w-48 flex items-center justify-center text-center cursor-pointer"
+            onclick="flip(event)"
+        >
+            <span class="pointer-events-none">{{key}}</span>
+            <span class="pointer-events-none hidden">{{value}}</span>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="border border-1 bg-gray-200 rounded-lg m-auto p-2">Start Test</div>
+
+    <div>
+        {% for key,value in studMat.mcqs.items %}
+        <div>{{key}}</div>
+        {% for key1,value1 in value.items %}
+        <div>{{key1}}</div>
+        {% endfor%} {% endfor %}
+    </div>
+
+    <div>
+        {% for key,value in studMat.tofs.items %}
+        <div>{{key}}</div>
+        {% endfor%}
+    </div>
+</div>
+<script>
+    function flip(event) {
+        event.target.classList.toggle("bg-gray-200");
+        event.target.children[0].classList.toggle("hidden");
+        event.target.children[1].classList.toggle("hidden");
+    }
+</script>
+{% else %}
 <div>Some error occured.</div>
 {% endif %} {% endblock %}
