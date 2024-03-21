@@ -7,6 +7,7 @@ urlpatterns = [
     path("login", views.loginUser, name="login"),
     path("logout", views.logoutUser, name="logout"),
     path('image2text', views.image2text, name="image2text"),
-    path('text2QNA', views.text2QNA, name="text2QNA"),
+    path('text2studMat', views.text2studMat, name="text2studMat"),
     path("chapter", views.chapter, name="chapter"),
+    path("test", views.test, name="test")
 ]

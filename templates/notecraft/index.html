@@ -10,9 +10,9 @@
 </form>
 <div>
     <div>Your Study Materials</div>
-    {% for chapter in chapters %}
+    {% for studMat in studMats %}
     <div>
-        <a href="{% url 'chapter' %}?studMat={{ chapter.id|urlencode }}">{{ chapter.title }}</a>
+        <a href="{% url 'chapter' %}?studMat={{ studMat.id|urlencode }}">{{ studMat.title }}</a>
     </div>
     {% endfor %}
 </div>
