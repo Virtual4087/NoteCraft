@@ -94,6 +94,60 @@
     </div>
 </div>
 
+<div id="scoreBlock" class="px-5 hidden">
+    <div class="flex flex-col items-center gap-2">
+        <div class="text-2xl font-semibold">You Scored</div>
+        <div class="text-5xl font-bold">7/10</div>
+    </div>
+    <ol class="flex flex-col gap-5">
+        <li>
+            <div class="flex flex-col gap-2">
+                <span class="font-semibold text-lg my-2">What's the capital of Nepal?</span>
+                <div class="px-6 py-2 rounded bg-green-100 flex justify-between">
+                    <span>Kathmandu</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="25" height="25" viewBox="0 0 24 24" stroke-width="2" stroke="#00b341" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M5 12l5 5l10 -10" />
+                    </svg>
+                </div>
+                <div class="px-6 py-2 rounded bg-gray-100">Dhangadhi</div>
+                <div class="px-6 py-2 rounded bg-gray-100">Pokhara</div>
+                <div class="px-6 py-2 rounded bg-red-100 flex justify-between">
+                    <span>Chitwan</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="#ff2825" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M18 6l-12 12" />
+                        <path d="M6 6l12 12" />
+                    </svg>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="flex flex-col gap-2">
+                <span class="font-semibold text-lg my-2">What does the fox say?</span>
+                <div class="px-6 py-2 rounded bg-gray-100">Wa-pa-pa-pa-pa-pa-pow!</div>
+                <div class="px-6 py-2 rounded bg-green-100 flex justify-between">
+                    <span>Gering-ding-ding-ding-dingeringeding!</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="25" height="25" viewBox="0 0 24 24" stroke-width="2" stroke="#00b341" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M5 12l5 5l10 -10" />
+                    </svg>
+                </div>
+                <div class="px-6 py-2 rounded bg-red-100 flex justify-between">
+                    <span>Joff-tchoff-tchoffo-tchoffo-tchoff!</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="#ff2825" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M18 6l-12 12" />
+                        <path d="M6 6l12 12" />
+                    </svg>
+                </div>
+                <div class="px-6 py-2 rounded bg-gray-100">Hatee-hatee-hatee-ho!</div>
+            </div>
+        </li>
+    </ol>
+</div>
+
+
 <script src="{% static 'js/studMat.js' %}"></script>
 
 {% else %}

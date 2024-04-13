@@ -5,7 +5,7 @@
         <button id="logSection" onclick="hideRegister()" class="flex-1 text-center py-3 font-semibold hover:text-blue-600">Sign In</button>
     </div>
 
-    <form id="registerUser" class="flex flex-col gap-3">
+    <form id="registerUser" class="flex flex-col gap-3" onsubmit="registerUser(event)">
         <div class="flex items-center border-2 py-2 px-3 rounded-lg">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -118,16 +118,14 @@
                 placeholder="Confirm Password"
             />
         </div>
-        <button
-            type="button"
-            onclick="registerUser()"
+        <input
+            type="submit"
             class="w-max self-center bg-indigo-600 py-2 px-5 rounded-lg hover:bg-indigo-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold"
+            value="Sign Up"
         >
-            Sign Up
-        </button>
     </form>
 
-    <form id="loginUser" class="hidden flex flex-col gap-3">
+    <form id="loginUser" class="hidden flex flex-col gap-3" onsubmit="loginUser(event)">
         <div class="flex items-center border-2 py-2 px-3 rounded-lg">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -182,13 +180,11 @@
                 placeholder="Password"
             />
         </div>
-        <button
-            type="button"
-            onclick="loginUser()"
+        <input
+            type="submit"
             class="w-max self-center bg-indigo-600 px-5 py-2 rounded-lg hover:bg-indigo-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold"
+            value="Sign In"
         >
-            Sign In
-        </button>
     </form>
 </div>
 <script>
@@ -198,6 +194,7 @@
     const logSection = document.querySelector("#logSection");
 
     function registerUser() {
+        event.preventDefault();
         const uname = document.querySelector("#regUname");
         const email = document.querySelector("#regEmail");
         const pass = document.querySelector("#regPass");
@@ -230,6 +227,7 @@
     }
 
     function loginUser() {
+        event.preventDefault();
         const uname = document.querySelector("#logUname");
         const pass = document.querySelector("#logPass");
         fetch("/login", {
