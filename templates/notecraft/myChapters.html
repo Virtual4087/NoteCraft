@@ -1,0 +1,18 @@
+{% extends 'notecraft/layout.html' %} {% block body %}
+<div class="m-auto container my-16 flex flex-col gap-6" id="studMatList">
+    <div class="text-4xl font-bold text-center w-full">Your Study Materials</div>
+    <div class="border border-black"></div>
+    <ol
+        class="list list-inside space-y-3 px-2"
+    >
+        {% for studMat in studMats %}
+        <li class="bg-gray-100 rounded w-full px-5 py-3 flex justify-between">
+            <a href="{% url 'chapter' %}?studMat={{ studMat.id|urlencode }}" class="font-semibold hover:text-blue-700"
+                >{{ studMat.title }}</a
+            >
+            <div class="text-sm text-gray-700 flex-none text-right">{{ studMat.created_at|date:"M d, Y" }}</div>
+        </li>
+        {% endfor %}
+    </ol>
+</div>
+{% endblock %}

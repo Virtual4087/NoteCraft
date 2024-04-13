@@ -1,13 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body>
-    {% block body %}
-    {% endblock %}
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <style></style>
+    <body>
+        <nav
+            class="sticky bg-white top-0 left-0 w-full p-5 flex justify-center gap-5 z-10 transition-all duration-500"
+        >
+            <a
+                href="{% url 'index' %}"
+                class="font-semibold hover:text-blue-500"
+                >Home</a
+            >
+            {% if user.is_authenticated %}
+            <a
+                href="{% url 'myChapters' %}"
+                class="font-semibold hover:text-blue-500"
+                >Study Materials</a
+            >
+            <form
+                action="{% url 'logout' %}"
+                method="post"
+                class="font-semibold hover:text-blue-500"
+            >
+                {% csrf_token %}
+                <input type="submit" value="Logout" class="cursor-pointer" />
+            </form>
+            {% else %}
+            <a
+                href="{% url 'login' %}"
+                class="font-semibold hover:text-blue-500"
+                >Login</a
+            >
+            {% endif %}
+        </nav>
+        <div class="p-3">{% block body %} {% endblock %}</div>
+        <script>
+            window.addEventListener("scroll", () => {
+                const nav = document.querySelector("nav");
+                if (window.scrollY > 0) {
+                    nav.classList.add("text-white", "bg-black");
+                } else {
+                    nav.classList.remove("text-white", "bg-black");
+                }
+            });
+        </script>
+    </body>
 </html>

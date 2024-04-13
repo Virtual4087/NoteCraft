@@ -5,6 +5,7 @@ import json
 
 env_vars = dotenv_values("./.env")
 
+
 def ExtractText(file):
     api_url = "https://api.ocr.space/parse/image"
     payload = {
@@ -22,12 +23,16 @@ def ExtractText(file):
     )
     response = r.content.decode()
     response_data = json.loads(response)
-    try:  
-        parsed_results = response_data["ParsedResults"][0]["ParsedText"]
+    try:
+        parsed_results = response_data["ParsedResults"]
     except:
         return None
-    parsed_results = parsed_results.replace("\n", " ")
-    return parsed_results
+
+    parsed_text = ""
+    for result in parsed_results:
+        parsed_text += result["ParsedText"]
+
+    return parsed_text.replace("\n", " ")
 
 
 def GenStudyMaterial(prompt):
@@ -37,7 +42,7 @@ def GenStudyMaterial(prompt):
         messages=[
             {
                 "role": "system",
-                "content": """You are a college teacher tasked with summarizing a body of text, giving it a short and sweet title, extracting all the important notes and creating flashcards (FC) of all the key information. In short, you'll be creating a study material for your students. Contain all the major information without missing a single one. Remember the students will fully depend on the study material you produce so make sure the quality is top notch. The students should be able to answer anything from the body of text if they've read your study material. The body of text may contain spelling and grammatical errors, as well as extraneous text like author names or unit numbers due to OCR scanning of textbook images. Your objective is to correct any errors, condense the information, and create structured output in JSON format for your students.
+                "content": """You are a college teacher tasked with properly evaluating and preparing a summary with an overview of all the major information from a body of text , giving it a short and sweet title, extracting all the important notes that are actual bits of information from the body of text and not just an overview like summary and creating flashcards (FC) with concise answers of all the key information. In short, you'll be creating a study material for your students. Contain all the major information without missing a single one. Remember the students will fully depend on the study material you produce so make sure the quality is top notch. The students should be able to answer anything from the body of text if they've read your study material. The body of text may contain spelling and grammatical errors, as well as extraneous text like author names or unit numbers due to OCR scanning of textbook images. Your objective is to correct any errors, condense the information, and create structured output in JSON format for your students.
 
                 Output Format:
                 {
@@ -52,7 +57,7 @@ def GenStudyMaterial(prompt):
                 Notes: Important points extracted from the text.
                 FC: Flashcards with key information having two sides i.e. front & back. 
 
-                Remember to make standard looking Flash Cards of the key points, write the summary strictly from a third person perspective and don't miss any important notes. The summary should be  15%%-25%% length of the original text, absolutely do not make it longer or shorter than this! Create as many notes and Flash Cards as possible especially flash cards (This part is very important). Also make sure the output is strictly in proper json format (this is compulosry). And don't use any Sign numbers like "1", "a", "A" or "i".
+                Remember to make standard looking Flash Cards of the key points, write the summary strictly from a third person perspective and don't miss any important notes. The summary should be  15%%-25%% length of the original text, absolutely do not make it any longer or shorter than this! Create as many notes and Flash Cards as possible especially flash cards. Remember to make proper and meaningful flash cards, don't just throw in random words. Also make sure the output is strictly in proper json format (this is compulosry). And don't use any Sign numbers like "1", "a", "A" or "i".
                 Now, proceed with reading and understanding the content of the text, correcting any errors, and preparing the JSON output data accordingly.
                 """,
             },
@@ -61,6 +66,7 @@ def GenStudyMaterial(prompt):
     )
     response = completion
     return response
+
 
 def GenQuestions(prompt):
     client = OpenAI(api_key=env_vars["OPENAI_API_KEY"])
@@ -80,7 +86,7 @@ def GenQuestions(prompt):
                 MCQ: Questions with multiple choices and their correct/incorrect answers.
                 TOF: Questions with true/false answers.
 
-                Remember to provide proper choices in MCQ and don't use any Sign numbers like "1", "a", "A", "i" or "Question1" when writing questions or choices. Also make sure the output is strictly in proper json format. This is compulosry. Create exactly 7 MCQs and 3 TOFs. Abide by this number, it is very important.
+                Remember to provide proper choices in MCQ and don't use any Sign numbers like "1", "a", "A", "i" or "Question1" when writing questions or choices. Also make sure the output is strictly in proper json format. This is compulosry. Create exactly 7 MCQs and 3 TOFs. Abide by this number, it is very important. Never provide true/false questions in MCQ. All the MCQ questions must have 4 choices. 
                 Now, proceed with reading and understanding the content of the text, correcting any errors, and preparing the JSON output data accordingly.
                 """,
             },

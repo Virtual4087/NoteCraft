@@ -4,20 +4,19 @@ from .utils import ExtractText, GenStudyMaterial, GenQuestions
 from .models import Chapter, User
 from django.contrib.auth import login, logout, authenticate
 from django.urls import reverse
-import time, json, random
+from django.contrib.auth.decorators import login_required
+import json, random
 
 # Create your views here.
-
 
 def index(request):
     if request.user.is_authenticated:
         return render(
             request,
             "notecraft/index.html",
-            {"studMats": request.user.UserChapters.all()},
+            {"studMats": request.user.UserChapters.order_by("-created_at")[:5]},
         )
     return render(request, "notecraft/auth.html")
-
 
 def registerUser(request):
     if request.method == "POST":
@@ -52,37 +51,49 @@ def loginUser(request):
 
     return redirect("index")
 
-
+@login_required
 def logoutUser(request):
-    logout(request)
+    if request.method == "POST":
+        logout(request)
     return redirect("index")
 
-
+@login_required
 def image2text(request):
-    result = ""
     if request.method == "POST":
+        result = ""
         images = request.FILES.getlist("images")
+        pdf = request.FILES.get("pdf")
 
         if len(images) > 0:
             for image in images:
                 if image.size > 1000000:
-                    return HttpResponse(
-                        f"{image.name} is larger than 1 MB. Please upload a smaller image."
-                    )
+                    return JsonResponse({"success": False, "Error": f"{image.name} is larger than 1 MB. Please upload a smaller image."})
                 text = ExtractText(image)
                 if text:
                     result += text
                     result += "\n"
                 else:
-                    return HttpResponse(f"Couldnt read the text from {image.name}")
+                    return JsonResponse({"success" : False, "Error" : f"Couldnt read the text from {image.name}"})
 
-        return render(request, "notecraft/OCR.html", {"text": result})
+        elif pdf:
+            if pdf.size > 1000000:
+                return JsonResponse(
+                    {"success": False, "Error": f"{pdf.name} is larger than 1 MB. Please upload a smaller PDF."}
+                )
+            text = ExtractText(pdf)
+            result = text
+        else:
+            return JsonResponse({"success": False, "Error": "No file uploaded"})
+        return JsonResponse({"success": True, "text": result})
     return redirect("index")
 
-
+@login_required
 def text2studMat(request):
     if request.method == "POST":
-        prompt = request.POST.get("ai_prompt")
+        data = json.loads(request.body.decode("utf-8"))
+        prompt = data.get("prompt").strip()
+        if len(prompt)/4 > 35000:
+            return JsonResponse({"success": False, "Error": "Text too long."}) 
         studMat = GenStudyMaterial(prompt)
         json_studMat = None
         count = 1
@@ -108,8 +119,8 @@ def text2studMat(request):
             try:
                 json_studMat = json.loads(studMat.choices[0].message.content)
             except Exception as error:
-                return HttpResponse(f"\n{count}\n\n{studMat}\n\n{str(error)}")
-            
+                return JsonResponse({"success": False, "Error" : f"\nTries Taken: {count}\n\nResponse: {studMat}\n\nError: {str(error)}"})
+
         chapter = Chapter.objects.create(
             user=request.user,
             OCRText=prompt,
@@ -119,11 +130,11 @@ def text2studMat(request):
             flashcards=json_studMat["FC"],
         )
         chapter.save()
-        
-        return redirect(f"{reverse('chapter')}?studMat={chapter.id}")
+
+        return JsonResponse({"success": True, "id": chapter.id})
     return redirect("index")
 
-
+@login_required
 def test(request):
     if request.method == "POST":
         data = json.loads(request.body.decode("utf-8"))
@@ -149,6 +160,7 @@ def test(request):
                     raise ValueError("Invalid Output: Wrong TOF questions")
                 elif (len(json_questions["MCQ"]) + len(json_questions["TOF"])) != 10:
                     raise ValueError("Invalid Output: Not enough questions")
+
                 break
 
             except Exception as e:
@@ -175,10 +187,10 @@ def test(request):
 
         if not json_questions:
             try:
-                json_questions = json.loads(questions.choices[0].message.content) 
+                json_questions = json.loads(questions.choices[0].message.content)
             except Exception as error:
                 return JsonResponse({"success": False, "Error": str(error)})
-            
+
         # shuffling the questions
         list_mcq = list(json_questions["MCQ"].items())
         list_tof = list(json_questions["TOF"].items())
@@ -186,21 +198,26 @@ def test(request):
         random.shuffle(list_tof)
         json_questions["MCQ"] = dict(list_mcq)
         json_questions["TOF"] = dict(list_tof)
-        for key,value in json_questions["MCQ"].items():
+        for key, value in json_questions["MCQ"].items():
             list_choices = list(value.items())
             random.shuffle(list_choices)
             json_questions["MCQ"][key] = dict(list_choices)
 
         return JsonResponse({"success": True, "questions": json_questions})
 
-
-
+@login_required
 def chapter(request):
-    if request.user.is_authenticated:
-        id = request.GET.get("studMat", None)
-        try:
-            chapter = Chapter.objects.get(user=request.user, id=id)
-        except:
-            chapter = None
-        return render(request, "notecraft/studyMaterial.html", {"studMat": chapter})
-    return redirect("index")
+    id = request.GET.get("studMat", None)
+    try:
+        chapter = Chapter.objects.get(user=request.user, id=id)
+    except:
+        chapter = None
+    return render(request, "notecraft/studyMaterial.html", {"studMat": chapter})
+
+@login_required
+def myChapters(request):
+    return render(
+        request,
+        "notecraft/myChapters.html",
+        {"studMats": request.user.UserChapters.all()},
+    )

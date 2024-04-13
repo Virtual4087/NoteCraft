@@ -1,22 +1,309 @@
 {% extends 'notecraft/layout.html' %} {% block body %}
-<form
-    action="{% url 'image2text' %}"
-    method="post"
-    enctype="multipart/form-data"
->
-    {% csrf_token %}
-    <input type="file" name="images" accept="image/*" multiple />
-    <input type="submit" />
-</form>
-<div>
-    <div>Your Study Materials</div>
-    {% for studMat in studMats %}
-    <div>
-        <a href="{% url 'chapter' %}?studMat={{ studMat.id|urlencode }}">{{ studMat.title }}</a>
+
+<div class="w-full flex flex-col items-center my-16 gap-3">
+    <div class="text-5xl font-bold tracking-wide">
+        Transform Images and PDFs into study materials
     </div>
-    {% endfor %}
+    <div class="text-3xl font-bold text-blue-700">Study smarter Not harder</div>
 </div>
-<form action="{% url 'logout'%}">
-    <button type="submit">Logout</button>
-</form>
+<div
+    class="container flex flex-col items-center gap-10 m-auto md:w-2/3 xl:w-1/2 2xl:w-2/5 border-2 border-gray-600 rounded-xl pb-10 overflow-hidden"
+    id="uploadPage"
+>
+    <div class="w-full flex justify-center">
+        <button
+            id="imgButton"
+            class="text-center flex-1 bg-blue-600 py-3 text-white font-semibold"
+            onclick="hidePdf()"
+        >
+            IMAGE
+        </button>
+        <button
+            id="pdfButton"
+            class="text-center flex-1 py-3 font-semibold"
+            onclick="hideImg()"
+        >
+            PDF
+        </button>
+    </div>
+
+    <div class="self-start px-10">
+        <div class="font-semibold">Note:</div>
+        <div class="font-semibold">
+            i.&nbsp;&nbsp;Upload your images in order
+        </div>
+        <div class="font-semibold">
+            ii.&nbsp;Each file must be less than 1 mb
+        </div>
+    </div>
+    <form
+        enctype="multipart/form-data"
+        id="imgForm"
+        class="flex flex-col items-center gap-5 w-full px-10"
+        data-csrf = "{{csrf_token}}"
+        onsubmit="extractText(event)"
+    >
+        <label class="container lg:px-10">
+            <div
+                class="border-2 border-dashed border-gray-300 rounded p-10 w-full flex flex-col items-center gap-5"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="icon icon-tabler icon-tabler-upload"
+                    width="100"
+                    height="100"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="#222233"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
+                    <path d="M7 9l5 -5l5 5" />
+                    <path d="M12 4l0 12" />
+                </svg>
+                <div class="font-semibold">Click to upload Images</div>
+            </div>
+            <input
+                type="file"
+                id="imageInput"
+                name="images"
+                accept="image/*"
+                class="hidden"
+                multiple
+                required
+            />
+        </label>
+        <div id="imageList" class="w-full flex flex-col gap-2"></div>
+        <input
+            type="submit"
+            class="cursor-pointer px-5 py-3 rounded bg-blue-500 text-white font-semibold hover:bg-blue-600 disabled:cursor-progress disabled:bg-blue-500"
+        />
+    </form>
+    <form
+        enctype="multipart/form-data"
+        id="pdfForm"
+        class="flex flex-col items-center gap-5 hidden w-full w-full px-10"
+        data-csrf = "{{csrf_token}}"
+        onsubmit="extractText(event)"
+    >
+
+        <label class="container lg:px-10">
+            <div
+                class="border-2 border-gray-300 border-dashed rounded p-10 w-full flex flex-col items-center gap-5"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="icon icon-tabler icon-tabler-upload"
+                    width="100"
+                    height="100"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="#222233"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
+                    <path d="M7 9l5 -5l5 5" />
+                    <path d="M12 4l0 12" />
+                </svg>
+                <div class="font-semibold">Click to upload PDF</div>
+            </div>
+            <input
+                type="file"
+                id="pdfInput"
+                name="pdf"
+                accept=".pdf"
+                class="hidden"
+                required
+            />
+        </label>
+        <div id="pdfList" class="w-full flex flex-col gap-2"></div>
+        <input
+            type="submit"
+            class="cursor-pointer px-5 py-3 rounded bg-blue-500 text-white font-semibold hover:bg-blue-600 disabled:cursor-progress disabled:bg-blue-500"
+            value="submit"
+        />
+    </form>
+
+
+</div>
+
+<div class="m-auto 2xl:w-1/2 xl:w-2/3 md:w-3/4 w-5/6 my-16 flex flex-col gap-6">
+    <div class="text-4xl font-bold text-center w-full">Recents</div>
+    <div class="border border-black"></div>
+    <ol
+        class="list list-inside space-y-3 px-2"
+    >
+        {% for studMat in studMats %}
+        <li class="bg-gray-100 rounded-lg w-full px-5 py-3">
+            <a href="{% url 'chapter' %}?studMat={{ studMat.id|urlencode }}" class="font-semibold hover:text-blue-700 "
+                >{{ studMat.title }}</a
+            >
+        </li>
+        {% endfor %}
+    </ol>
+    <div>
+        <a href="{% url 'myChapters' %}" class="m-auto w-max flex flex-col items-center hover:text-blue-700 stroke-gray-800 hover:stroke-blue-700">
+            <div class="w-max font-semibold">View more</div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevrons-down" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5"  fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M7 7l5 5l5 -5" />
+                <path d="M7 13l5 5l5 -5" />
+            </svg>
+        </a>
+    </div>
+</div>
+
+<script>
+    const pdfForm = document.querySelector("#pdfForm");
+    const imgForm = document.querySelector("#imgForm");
+    const imgButton = document.querySelector("#imgButton");
+    const pdfButton = document.querySelector("#pdfButton");
+    const imageList = document.querySelector("#imageList");
+    const pdfList = document.querySelector("#pdfList");
+    const imageInput = document.querySelector("#imageInput");
+    const pdfInput = document.querySelector("#pdfInput");
+    var submitButton;
+
+    function extractText(event){
+        event.preventDefault();
+        imgButton.disabled = true;
+        pdfButton.disabled = true;
+        const form = event.target;
+        submitButton = form.querySelector("input[type=submit]");
+        submitButton.disabled = true;
+        submitButton.value = "Extracting text...";
+        const formData = new FormData(form);
+        imageInput.disabled = true;
+        pdfInput.disabled = true;
+
+        fetch('/image2text', {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": form.dataset.csrf,
+            },
+            body: formData,
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            if (data.success) {
+                generateStudMat(data.text);
+            } else {
+                submitButton.disabled = false;
+                imgButton.disabled = false;
+                pdfButton.disabled = false;
+                imageInput.disabled = false;
+                pdfInput.disabled = false;
+                submitButton.value = "submit";
+                alert(data.Error);
+            }
+        });
+    }
+
+    function generateStudMat(prompt){
+        submitButton.value = "Generating Study Material...";
+        const form = submitButton.form;
+        fetch('/text2studMat', {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": form.dataset.csrf,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({prompt: prompt}),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            if (data.success) {
+                window.location.href = `/chapter?studMat=${data.id}`;
+            } else {
+                submitButton.disabled = false;
+                imgButton.disabled = false;
+                pdfButton.disabled = false;
+                imageInput.disabled = false;
+                pdfInput.disabled = false;
+                submitButton.value = "submit";
+                alert(data.Error);
+            }
+        });
+
+    }
+
+    function hidePdf() {
+        imgButton.classList.add("bg-blue-600", "text-white");
+        pdfButton.classList.remove("bg-blue-600", "text-white");
+        pdfForm.classList.add("hidden");
+        imgForm.classList.remove("hidden");
+        pdfInput.value = "";
+        pdfList.innerHTML = "";
+    }
+
+    function hideImg() {
+        pdfButton.classList.add("bg-blue-600", "text-white");
+        imgButton.classList.remove("bg-blue-600", "text-white");
+        imgForm.classList.add("hidden");
+        pdfForm.classList.remove("hidden");
+        imageInput.value = "";
+        imageList.innerHTML = "";
+    }
+
+    function showList() {
+        showList.classList.remove("hidden");
+        uploadPage.classList.add("hidden");
+    }
+
+    imageInput.onchange = () => {
+        imageList.innerHTML = "";
+        for (const file of imageInput.files) {
+            if (file.size > 1000000) {
+                alert("File size must be less than 1 mb");
+                imageInput.value = "";
+                break;
+            }
+            const fileSrc = URL.createObjectURL(file);
+            imageList.innerHTML += `      
+            <div class="px-5 py-2 flex items-center gap-3 relative bg-gray-200 rounded">
+                <img src="${fileSrc}" class="w-10 h-10 rounded" />
+                </svg>
+                <a href=${fileSrc} target="_blank" class="font-semibold text-md underline hover:text-blue-700">${
+                file.name
+            }</a>
+                <div class="absolute right-5 text-sm">${Math.floor(
+                    file.size / 1000
+                )} kb</div>
+            </div>`;
+        }
+    };
+
+    pdfInput.onchange = () => {
+        pdfList.innerHTML = "";
+        for (const file of pdfInput.files) {
+            const fileSrc = URL.createObjectURL(file);
+            pdfList.innerHTML += `      
+            <div class="px-5 py-2 flex items-center gap-3 relative bg-gray-200 rounded">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-type-pdf" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="#333333" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                    <path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v4" />
+                    <path d="M5 18h1.5a1.5 1.5 0 0 0 0 -3h-1.5v6" />
+                    <path d="M17 18h2" />
+                    <path d="M20 15h-3v6" />
+                    <path d="M11 15v6h1a2 2 0 0 0 2 -2v-2a2 2 0 0 0 -2 -2h-1z" />
+                </svg>
+                <a href=${fileSrc} target="_blank" class="font-semibold text-md underline hover:text-blue-700">${
+                file.name
+            }</a>
+                <div class="absolute right-5 text-sm">${Math.floor(
+                    file.size / 1000
+                )} kb</div>
+            </div>`;
+        }
+    };
+</script>
 {% endblock %}

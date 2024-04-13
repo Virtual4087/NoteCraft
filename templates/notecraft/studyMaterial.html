@@ -1,54 +1,102 @@
-{% extends 'notecraft/layout.html' %} 
-{% load static %}
-{% block body %} 
-{% if studMat %} 
-    <div class="flex flex-col gap-5 p-5" id="studMatBlock">
-        <div class="text-xl font-bold m-auto">{{studMat.title}}</div>
+{% extends 'notecraft/layout.html' %} {% load static %} {% block body %} 
+{% if studMat %}
+<div class="flex flex-col gap-10 px-5" id="studMatBlock">
+    <div class="w-full flex justify-between border-b border-gray-300 pb-3">
+        <button onclick="goBack()" class="bg-gray-600 hover:bg-gray-700 font-semibold rounded-md p-2 flex gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left stroke-white" width="25" height="25" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M5 12l14 0" />
+                <path d="M5 12l6 6" />
+                <path d="M5 12l6 -6" />
+            </svg>
+            <span class="text-white">Back</span>
+        </button>
+        <button
+            onclick="switchToTest(event, '{{csrf_token}}', '{{studMat.id}}')"
+            class="bg-blue-500 font-semibold text-white rounded-md p-2 hover:bg-blue-600 disabled:cursor-progress disabled:bg-blue-500"
+        >
+            <span>Start Test</span>
+        </button>
+    </div>
+    <div class="text-xl text-center font-bold m-auto">
+        <div class="px-3">{{studMat.title}}</div>
+        <div class="border border-black rounded my-2"></div>
+    </div>
 
-        <div>
-            <div class="font-bold text-lg my-3">Summary</div>
-            <div class="">{{studMat.summary}}</div>
-        </div>
+    <div>
 
-        <div>
-            <div class="text-xl font-bold my-3">Notes</div>
-            <div class="flex flex-col gap-3">
-                {% for note in studMat.notes %}
-                <div class="px-4 py-2 border rounded-lg font-semibold bg-gray-200">
-                    {{note}}
-                </div>
-                {% endfor %}
-            </div>
-        </div>
+        <div>{{studMat.summary}}</div>
+    </div>
 
+    <div>
+        <div class="text-lg font-semibold my-3">NOTES</div>
+        <ul class="flex flex-col gap-3 list-decimal list-inside">
+            {% for note in studMat.notes %}
+            <li class="p-3 rounded font-semibold bg-gray-100 border-black">
+                {{note}}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div>
+        <div class="text-lg font-semibold my-3 text-center">FLASH CARDS</div>
         <div class="flex flex-wrap gap-10 justify-center my-5">
             {% for key,value in studMat.flashcards.items %}
             <div
-                class="p-3 border border-2 border-gray-400 rounded-lg h-48 w-48 flex items-center justify-center text-center cursor-pointer"
+                class="md:h-48 md:w-48 h-40 w-40 cursor-pointer select-none overflow-hidden"
                 onclick="flip(event)"
             >
-                <span class="pointer-events-none">{{key}}</span>
-                <span class="pointer-events-none hidden">{{value}}</span>
+                <div class="pointer-events-none p-2 w-full h-full border-2 border-gray-600 rounded-lg flex text-center justify-center items-center">{{key}}</div>
+                <div class="pointer-events-none hidden p-2 w-full h-full bg-black text-white rounded-lg flex text-center justify-center items-center">{{value}}</div>
             </div>
             {% endfor %}
         </div>
-
-        <div class="border border-1 bg-gray-200 rounded-lg m-auto p-2">
-            <button onclick="switchToTest(event, '{{csrf_token}}', '{{studMat.id}}')">Start Test</button>
-        </div>
-        
-    <div id="testBlock" class="hidden">
-        <div id="questions">
-
-        </div>
-        <button id="prevButton" onclick="prev()" disabled>Previous</button>
-        <button id="nextButton" onclick="next()">Next</button>
-        <button id="submitButton" onclick="submitAnswers()" class="hidden">submit</button>
+    </div>
+</div>
+<div id="testBlock" class="px-5 flex flex-col gap-4 hidden">
+    <div class="ml-auto">
+        <button onclick="switchTostudMat()" class="bg-gray-500 hover:bg-gray-600 font-semibold rounded-md p-2 flex gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout" width="25" height="25" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+                <path d="M9 12h12l-3 -3" />
+                <path d="M18 15l3 -3" />
+            </svg>
+            <span class="text-white">Exit</span>
+        </button>
     </div>
 
-    <script src="{% static 'js/studMat.js' %}"></script>
+    <ol id="questions" class="select-none"></ol>
+
+    <div class="flex justify-between">
+        <div class="flex gap-1">
+            <button id="prevButton" class="p-2 bg-blue-600 disabled:bg-blue-400 rounded font-semibold text-white" onclick="prev()" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="25" height="25" viewBox="0 0 24 24" stroke-width="2" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M5 12l14 0" />
+                    <path d="M5 12l6 6" />
+                    <path d="M5 12l6 -6" />
+                </svg>
+            <button>
+            <button id="nextButton" onclick="next()" class="p-2 bg-blue-600  disabled:bg-blue-400 rounded font-semibold text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-right" width="25" height="25" viewBox="0 0 24 24" stroke-width="2" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M5 12l14 0" />
+                    <path d="M13 18l6 -6" />
+                    <path d="M13 6l6 6" />
+                  </svg>
+            </button>
+        </div>
+        <button id="submitButton" onclick="submitAnswers()" class="py-2 px-3 bg-blue-500 hover:bg-blue-600 rounded font-semibold text-white hidden">
+            Submit
+        </button>
+    </div>
+</div>
+
+<script src="{% static 'js/studMat.js' %}"></script>
 
 {% else %}
-    <div>Some error occured.</div>
+<div>Some error occured.</div>
 {% endif %} 
 {% endblock %}
