@@ -9,7 +9,7 @@
     <style></style>
     <body>
         <nav
-            class="sticky bg-white top-0 left-0 w-full p-5 flex justify-center gap-5 z-10 transition-all duration-500"
+            class="sticky bg-white top-0 left-0 w-full p-5 flex justify-center gap-5 z-10 transition-all duration-700 ease-in-out"
         >
             <a
                 href="{% url 'index' %}"
@@ -40,12 +40,14 @@
         </nav>
         <div class="p-3">{% block body %} {% endblock %}</div>
         <script>
+            const nav = document.querySelector("nav");
             window.addEventListener("scroll", () => {
-                const nav = document.querySelector("nav");
                 if (window.scrollY > 0) {
                     nav.classList.add("text-white", "bg-black");
+                    nav.classList.remove("bg-white");
                 } else {
                     nav.classList.remove("text-white", "bg-black");
+                    nav.classList.add("bg-white");
                 }
             });
         </script>

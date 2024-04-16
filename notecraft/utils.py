@@ -79,12 +79,12 @@ def GenQuestions(prompt):
 
                 Output Format:
                 {
-                    "MCQ": {"Question" : {"choice1": true/false, "choice2": true/false, "choice3": true/false, "choice4": true/false},
-                    "TOF": {"Question": true/false}
+                    "MCQ": {"Question" : {"choice1": true/false, "choice2": true/false, "choice3": true/false, "choice4": true/false}...},
+                    "TOF": {"Question": {"True" : true/false, "False" : true/false}...}
                 }
 
                 MCQ: Questions with multiple choices and their correct/incorrect answers.
-                TOF: Questions with true/false answers.
+                TOF: Questions with two choices i.e. True and false.
 
                 Remember to provide proper choices in MCQ and don't use any Sign numbers like "1", "a", "A", "i" or "Question1" when writing questions or choices. Also make sure the output is strictly in proper json format. This is compulosry. Create exactly 7 MCQs and 3 TOFs. Abide by this number, it is very important. Never provide true/false questions in MCQ. All the MCQ questions must have 4 choices. 
                 Now, proceed with reading and understanding the content of the text, correcting any errors, and preparing the JSON output data accordingly.

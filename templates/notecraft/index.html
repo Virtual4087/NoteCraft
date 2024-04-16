@@ -133,33 +133,36 @@
 
 </div>
 
-<div class="m-auto 2xl:w-1/2 xl:w-2/3 md:w-3/4 w-5/6 my-16 flex flex-col gap-6">
-    <div class="text-4xl font-bold text-center w-full">Recents</div>
-    <div class="border border-black"></div>
-    <ol
-        class="list list-inside space-y-3 px-2"
-    >
-        {% for studMat in studMats %}
-        <li class="bg-gray-100 rounded w-full px-5 py-3 flex justify-between">
-            <a href="{% url 'chapter' %}?studMat={{ studMat.id|urlencode }}" class="font-semibold hover:text-blue-700"
-                >{{ studMat.title }}</a
-            >
-            <div class="text-sm text-gray-700 flex-none text-right">{{ studMat.created_at|date:"M d, Y" }}</div>
-        </li>
-        {% endfor %}
-    </ol>
-    <div>
-        <a href="{% url 'myChapters' %}" class="m-auto w-max flex flex-col items-center hover:text-blue-700 stroke-gray-800 hover:stroke-blue-700">
-            <div class="w-max font-semibold">View more</div>
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevrons-down" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5"  fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M7 7l5 5l5 -5" />
-                <path d="M7 13l5 5l5 -5" />
-            </svg>
-        </a>
+{% if studMats %}
+    <div class="m-auto 2xl:w-1/2 xl:w-2/3 md:w-3/4 w-5/6 my-16 flex flex-col gap-6">
+        <div class="text-4xl font-bold text-center w-full">Recents</div>
+        <div class="border border-black"></div>
+        <ol
+            class="list list-inside space-y-3 px-2"
+        >
+            {% for studMat in studMats %}
+            <li class="bg-gray-100 rounded w-full px-5 py-3 flex justify-between">
+                <a href="{% url 'chapter' %}?studMat={{ studMat.id|urlencode }}" class="font-semibold hover:text-blue-700"
+                    >{{ studMat.title }}</a
+                >
+                <div class="text-sm text-gray-700 flex-none text-right">{{ studMat.created_at|date:"M d, Y" }}</div>
+            </li>
+            {% endfor %}
+        </ol>
+        {% if studMats|length > 4 %}
+            <div>
+                <a href="{% url 'myChapters' %}" class="m-auto w-max flex flex-col items-center hover:text-blue-700 stroke-gray-800 hover:stroke-blue-700">
+                    <div class="w-max font-semibold">View more</div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevrons-down" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5"  fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M7 7l5 5l5 -5" />
+                        <path d="M7 13l5 5l5 -5" />
+                    </svg>
+                </a>
+            </div>
+        {% endif %}
     </div>
-</div>
-
+{% endif %}
 <script>
     const pdfForm = document.querySelector("#pdfForm");
     const imgForm = document.querySelector("#imgForm");

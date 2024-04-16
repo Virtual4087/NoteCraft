@@ -150,14 +150,21 @@ def test(request):
         while count < 3:
             try:
                 json_questions = json.loads(questions.choices[0].message.content)
-                first_key = next(iter(json_questions["MCQ"]))
-                if (
-                    "A" in json_questions["MCQ"][first_key]
-                    or "a" in json_questions["MCQ"][first_key]
-                ):
+                mcq_key = next(iter(json_questions["MCQ"]))
+                tof_key = next(iter(json_questions["TOF"]))
+
+                if len(json_questions["TOF"][tof_key]) != 2:
+                    raise ValueError("Invalid Output: Not enough TOF choices")
+                
+                elif len(json_questions["MCQ"][mcq_key]) != 4:
+                    raise ValueError("Invalid Output: Not enough MCQ choices")
+
+                elif any(choice in json_questions["MCQ"][mcq_key] for choice in ["a", "A", "i", "1"]) or any(choice in str(json_questions["MCQ"][mcq_key]).lower().replace(" ", "") for choice in ["optiona", "option1"]):
                     raise ValueError("Invalid Output: Wrong MCQ choices")
-                elif "Question1" in json_questions["TOF"]:
-                    raise ValueError("Invalid Output: Wrong TOF questions")
+                
+                elif "Question1" in json_questions["TOF"] or "Question1" in json_questions["MCQ"]:
+                    raise ValueError("Invalid Output: Wrong TOF/MCQ questions")
+                
                 elif (len(json_questions["MCQ"]) + len(json_questions["TOF"])) != 10:
                     raise ValueError("Invalid Output: Not enough questions")
 
@@ -166,16 +173,29 @@ def test(request):
             except Exception as e:
                 count += 1
                 json_questions = None
-                if "Wrong MCQ choices" in str(e):
+                if "Not enough TOF choices" in str(e):
                     questions = GenQuestions(
                         prompt
-                        + "\nRemember the choices in MCQ should not contain any sign numbers like '1', 'a' or 'i'."
+                        + '\nRemember to provide exactly 2 choices for each TOF question in this format {"True":true/false, "False":true/false}.'
                     )
-                elif "Wrong TOF questions" in str(e):
+
+                elif "Not enough MCQ choices" in str(e):
+                    questions = GenQuestions(
+                        prompt
+                        + "\nRemember to provide exactly 4 choices for MCQ questions."
+                    )
+
+                elif "Wrong MCQ choices" in str(e):
+                    questions = GenQuestions(
+                        prompt
+                        + "\nRemember the choices in MCQ should not contain any sign numbers like '1', 'a' or 'i' and there should be exactly 4 choices."
+                    )
+                elif "Wrong TOF/MCQ questions" in str(e):
                     questions = GenQuestions(
                         prompt
                         + "\nRemember to provide proper questions in TOF and MCQ. DOn't mistakenly write just 'Question1' or 'QuestionA' instead of actual questions."
                     )
+
                 elif "Not enough questions" in str(e):
                     questions = GenQuestions(
                         prompt + "\nRemember to provide 7 MCQs and 3 MCQs exactly."
@@ -192,16 +212,14 @@ def test(request):
                 return JsonResponse({"success": False, "Error": str(error)})
 
         # shuffling the questions
-        list_mcq = list(json_questions["MCQ"].items())
-        list_tof = list(json_questions["TOF"].items())
-        random.shuffle(list_mcq)
-        random.shuffle(list_tof)
-        json_questions["MCQ"] = dict(list_mcq)
-        json_questions["TOF"] = dict(list_tof)
-        for key, value in json_questions["MCQ"].items():
+        json_questions = {**json_questions["MCQ"], **json_questions["TOF"]}
+        list_questions = list(json_questions.items())
+        random.shuffle(list_questions)
+        json_questions = dict(list_questions)
+        for key, value in json_questions.items():
             list_choices = list(value.items())
             random.shuffle(list_choices)
-            json_questions["MCQ"][key] = dict(list_choices)
+            json_questions[key] = dict(list_choices)
 
         return JsonResponse({"success": True, "questions": json_questions})
 

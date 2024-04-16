@@ -7,13 +7,13 @@
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                 <path d="M5 12l14 0" />
                 <path d="M5 12l6 6" />
-                <path d="M5 12l6 -6" />
+                <path d="M5 12l6 -6" /0
             </svg>
             <span class="text-white">Back</span>
         </button>
         <button
             onclick="switchToTest(event, '{{csrf_token}}', '{{studMat.id}}')"
-            class="bg-blue-500 font-semibold text-white rounded-md p-2 hover:bg-blue-600 disabled:cursor-progress disabled:bg-blue-500"
+            class="cursor-pointer bg-blue-500 font-semibold text-white rounded-md p-2 hover:bg-blue-600 disabled:cursor-progress disabled:bg-blue-500"
         >
             <span>Start Test</span>
         </button>
@@ -29,7 +29,7 @@
     </div>
 
     <div>
-        <div class="text-lg font-semibold my-3">NOTES</div>
+        <div class="text-lg font-bold my-3">NOTES</div>
         <ul class="flex flex-col gap-3 list-decimal list-inside">
             {% for note in studMat.notes %}
             <li class="p-3 rounded font-semibold bg-gray-100 border-black">
@@ -40,15 +40,15 @@
     </div>
 
     <div>
-        <div class="text-lg font-semibold my-3 text-center">FLASH CARDS</div>
+        <div class="text-lg font-bold my-5 text-center">FLASH CARDS</div>
         <div class="flex flex-wrap gap-10 justify-center my-5">
             {% for key,value in studMat.flashcards.items %}
             <div
-                class="md:h-48 md:w-48 h-40 w-40 cursor-pointer select-none overflow-hidden"
+                class="md:h-48 md:w-52 h-40 w-44 cursor-pointer select-none overflow-hidden"
                 onclick="flip(event)"
             >
-                <div class="pointer-events-none p-2 w-full h-full border-2 border-gray-600 rounded-lg flex text-center justify-center items-center">{{key}}</div>
-                <div class="pointer-events-none hidden p-2 w-full h-full bg-black text-white rounded-lg flex text-center justify-center items-center">{{value}}</div>
+                <div class="pointer-events-none font-semibold p-3 w-full h-full border-2 border-blue-700 rounded-lg flex text-center justify-center items-center">{{key}}</div>
+                <div class="pointer-events-none hidden p-3 w-full h-full bg-blue-700 text-white rounded-lg flex text-center justify-center items-center">{{value}}</div>
             </div>
             {% endfor %}
         </div>
@@ -95,56 +95,23 @@
 </div>
 
 <div id="scoreBlock" class="px-5 hidden">
-    <div class="flex flex-col items-center gap-2">
-        <div class="text-2xl font-semibold">You Scored</div>
-        <div class="text-5xl font-bold">7/10</div>
+
+    <div class="flex flex-col items-center gap-2 my-10">
+        <div class="text-3xl font-semibold">You Scored</div>
+        <div class="text-6xl font-bold" id="finalScore">7/10</div>
     </div>
-    <ol class="flex flex-col gap-5">
-        <li>
-            <div class="flex flex-col gap-2">
-                <span class="font-semibold text-lg my-2">What's the capital of Nepal?</span>
-                <div class="px-6 py-2 rounded bg-green-100 flex justify-between">
-                    <span>Kathmandu</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="25" height="25" viewBox="0 0 24 24" stroke-width="2" stroke="#00b341" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M5 12l5 5l10 -10" />
-                    </svg>
-                </div>
-                <div class="px-6 py-2 rounded bg-gray-100">Dhangadhi</div>
-                <div class="px-6 py-2 rounded bg-gray-100">Pokhara</div>
-                <div class="px-6 py-2 rounded bg-red-100 flex justify-between">
-                    <span>Chitwan</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="#ff2825" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M18 6l-12 12" />
-                        <path d="M6 6l12 12" />
-                    </svg>
-                </div>
-            </div>
-        </li>
-        <li>
-            <div class="flex flex-col gap-2">
-                <span class="font-semibold text-lg my-2">What does the fox say?</span>
-                <div class="px-6 py-2 rounded bg-gray-100">Wa-pa-pa-pa-pa-pa-pow!</div>
-                <div class="px-6 py-2 rounded bg-green-100 flex justify-between">
-                    <span>Gering-ding-ding-ding-dingeringeding!</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="25" height="25" viewBox="0 0 24 24" stroke-width="2" stroke="#00b341" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M5 12l5 5l10 -10" />
-                    </svg>
-                </div>
-                <div class="px-6 py-2 rounded bg-red-100 flex justify-between">
-                    <span>Joff-tchoff-tchoffo-tchoffo-tchoff!</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="#ff2825" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M18 6l-12 12" />
-                        <path d="M6 6l12 12" />
-                    </svg>
-                </div>
-                <div class="px-6 py-2 rounded bg-gray-100">Hatee-hatee-hatee-ho!</div>
-            </div>
-        </li>
-    </ol>
+
+    <div class="flex flex-col gap-5" id="questionsPreview"></div>
+    <div class="w-max mx-auto my-10">
+        <button onclick="window.location.reload();" class="py-2 px-3 bg-blue-500 hover:bg-blue-600 rounded font-semibold text-white flex gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-back-up" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M9 14l-4 -4l4 -4" />
+                <path d="M5 10h11a4 4 0 1 1 0 8h-1" />
+            </svg>
+            <span>Return</span>
+        </button>
+    </div>
 </div>
 
 
