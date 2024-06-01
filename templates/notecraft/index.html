@@ -1,10 +1,10 @@
 {% extends 'notecraft/layout.html' %} {% block body %}
 
-<div class="w-full flex flex-col items-center my-16 gap-3">
-    <div class="text-5xl font-bold tracking-wide">
+<div class="w-full flex flex-col items-center lg:my-16 md:my-13 my-10 gap-3">
+    <div class="lg:text-5xl md:text-4xl text-3xl font-bold tracking-wide text-center">
         Transform Images and PDFs into study materials
     </div>
-    <div class="text-3xl font-bold text-blue-700">Study smarter Not harder</div>
+    <div class="lg:text-3xl md:text-2xl text-xl font-bold text-blue-700 text-center">Study Smarter Not Harder</div>
 </div>
 <div
     class="container flex flex-col items-center gap-10 m-auto md:w-2/3 xl:w-1/2 2xl:w-2/5 border-2 border-gray-600 rounded-xl pb-10 overflow-hidden"
@@ -126,7 +126,7 @@
         <input
             type="submit"
             class="cursor-pointer px-5 py-3 rounded bg-blue-500 text-white font-semibold hover:bg-blue-600 disabled:cursor-progress disabled:bg-blue-500"
-            value="submit"
+            value="Submit"
         />
     </form>
 
@@ -134,18 +134,18 @@
 </div>
 
 {% if studMats %}
-    <div class="m-auto 2xl:w-1/2 xl:w-2/3 md:w-3/4 w-5/6 my-16 flex flex-col gap-6">
+    <div class="m-auto 2xl:w-1/2 xl:w-2/3 md:w-5/6 w-full my-16 flex flex-col gap-6">
         <div class="text-4xl font-bold text-center w-full">Recents</div>
         <div class="border border-black"></div>
         <ol
             class="list list-inside space-y-3 px-2"
         >
             {% for studMat in studMats %}
-            <li class="bg-gray-100 rounded w-full px-5 py-3 flex justify-between">
+            <li class="bg-gray-100 rounded w-full px-5 py-3 flex md:flex-row md:justify-between flex-col gap-1">
                 <a href="{% url 'chapter' %}?studMat={{ studMat.id|urlencode }}" class="font-semibold hover:text-blue-700"
                     >{{ studMat.title }}</a
                 >
-                <div class="text-sm text-gray-700 flex-none text-right">{{ studMat.created_at|date:"M d, Y" }}</div>
+                <div class="text-xs text-gray-700 flex-none md:text-right md:text-sm">{{ studMat.created_at|date:"M d, Y" }}</div>
             </li>
             {% endfor %}
         </ol>
@@ -205,7 +205,7 @@
                 imageInput.disabled = false;
                 pdfInput.disabled = false;
                 submitButton.value = "submit";
-                alert(data.Error);
+                alert("An error occured!");
             }
         });
     }
@@ -233,7 +233,7 @@
                 imageInput.disabled = false;
                 pdfInput.disabled = false;
                 submitButton.value = "submit";
-                alert(data.Error);
+                alert("An error occured!");
             }
         });
 

@@ -1,275 +1,464 @@
-{% extends 'notecraft/layout.html' %} {% block body %}
-<div class="flex flex-col gap-5 2xl:w-1/3 lg:w-1/2 sm:w-4/5 rounded overflow-hidden m-auto">
-    <div class="flex justify-center gap-5">
-        <button id="regSection" onclick="hideLogin()" class="flex-1 text-center py-3 text-blue-600 border-b-2 border-blue-600 font-semibold">Sign Up</button>
-        <button id="logSection" onclick="hideRegister()" class="flex-1 text-center py-3 font-semibold hover:text-blue-600">Sign In</button>
-    </div>
-
-    <form id="registerUser" class="flex flex-col gap-3" onsubmit="registerUser(event)">
-        <div class="flex items-center border-2 py-2 px-3 rounded-lg">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="text-gray-400 icon icon-tabler icon-tabler-user"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                stroke-width="2"
-                stroke="currentColor"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
-                <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
-            </svg>
-            <input
-                id="regUname"
-                class="pl-2 w-full outline-none border-none"
-                type="text"
-                name="username"
-                placeholder="Username"
-                autocomplete="off"
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <head>
+            <meta charset="UTF-8" />
+            <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1.0"
             />
-        </div>
-
-        <div class="flex items-center border-2 py-2 px-3 rounded-lg">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="text-gray-400"
-                fill="none"
-                width="20"
-                height="20"
-                stroke-width="1.5"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-            >
-                <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-                />
-            </svg>
-            <input
-                id="regEmail"
-                class="pl-2 w-full outline-none border-none"
-                type="email"
-                name="email"
-                placeholder="Email Address"
-                autocomplete="off"
-            />
-        </div>
-
-        <div class="flex items-center border-2 py-2 px-3 rounded-lg">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="text-gray-400 icon icon-tabler icon-tabler-lock"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                stroke-width="2"
-                stroke="currentColor"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path
-                    d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z"
-                ></path>
-                <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"></path>
-                <path d="M8 11v-4a4 4 0 1 1 8 0v4"></path>
-            </svg>
-            <input
-                id="regPass"
-                class="pl-2 w-full outline-none border-none"
-                type="password"
-                name="password"
-                placeholder="Password"
-            />
-        </div>
-
-        <div class="flex items-center border-2 py-2 px-3 rounded-lg">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="text-gray-400 icon icon-tabler icon-tabler-lock"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                stroke-width="2"
-                stroke="currentColor"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path
-                    d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z"
-                ></path>
-                <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"></path>
-                <path d="M8 11v-4a4 4 0 1 1 8 0v4"></path>
-            </svg>
-            <input
-                id="confirmPass"
-                class="pl-2 w-full outline-none border-none"
-                type="password"
-                name="confirmation"
-                placeholder="Confirm Password"
-            />
-        </div>
-        <input
-            type="submit"
-            class="self-center cursor-pointer bg-blue-500 py-2 px-5 rounded hover:bg-blue-600 text-white font-semibold"
-            value="Sign Up"
-        >
-    </form>
-
-    <form id="loginUser" class="hidden flex flex-col gap-3" onsubmit="loginUser(event)">
-        <div class="flex items-center border-2 py-2 px-3 rounded-lg">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="text-gray-400 icon icon-tabler icon-tabler-user"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                stroke-width="2"
-                stroke="currentColor"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
-                <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
-            </svg>
-            <input
-                id="logUname"
-                class="pl-2 w-full outline-none border-none"
-                type="text"
-                name="username"
-                placeholder="Username"
-                autocomplete="off"
-            />
-        </div>
-        <div class="flex items-center border-2 py-2 px-3 rounded-lg">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="text-gray-400 icon icon-tabler icon-tabler-lock"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                stroke-width="2"
-                stroke="currentColor"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path
-                    d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z"
-                ></path>
-                <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"></path>
-                <path d="M8 11v-4a4 4 0 1 1 8 0v4"></path>
-            </svg>
-            <input
-                id="logPass"
-                class="pl-2 w-full outline-none border-none"
-                type="password"
-                name="password"
-                placeholder="Password"
-            />
-        </div>
-        <input
-            type="submit"
-            class="self-center cursor-pointer bg-blue-500 py-2 px-5 rounded hover:bg-blue-600 text-white font-semibold"
-            value="Sign In"
-        >
-    </form>
-</div>
-<script>
-    const register = document.querySelector("#registerUser");
-    const login = document.querySelector("#loginUser");
-    const regSection = document.querySelector("#regSection");
-    const logSection = document.querySelector("#logSection");
-
-    function registerUser() {
-        event.preventDefault();
-        const uname = document.querySelector("#regUname");
-        const email = document.querySelector("#regEmail");
-        const pass = document.querySelector("#regPass");
-        const confirmPass = document.querySelector("#confirmPass");
-        if (pass.value === confirmPass.value) {
-            fetch("/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": "{{csrf_token}}",
-                },
-                body: JSON.stringify({
-                    username: uname.value,
-                    email: email.value,
-                    password: pass.value,
-                }),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log(data);
-                    if (data.success == true) {
-                        location.reload(true);
-                    } else {
-                        alert("Username already exists");
-                    }
-                });
-        } else {
-            alert("Passwords do not match");
-        }
-    }
-
-    function loginUser() {
-        event.preventDefault();
-        const uname = document.querySelector("#logUname");
-        const pass = document.querySelector("#logPass");
-        fetch("/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": "{{csrf_token}}",
-            },
-            body: JSON.stringify({
-                username: uname.value,
-                password: pass.value,
-            }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-                if (data.success == true) {
-                    location.reload(true);
-                } else {
-                    alert(data.Error);
+            <title>Document</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <style>
+                @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+                @import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&display=swap");
+                .font-inter {
+                    font-family: "Inter", sans-serif;
                 }
-            });
-    }
+                .font-instrument {
+                    font-family: "Instrument Sans", sans-serif;
+                }
 
-    function hideRegister() {
-        login.classList.remove("hidden");
-        register.classList.add("hidden");
-        regSection.classList.remove("border-b-2", "border-blue-600", "text-blue-600");
-        regSection.classList.add("hover:text-blue-600");
-        logSection.classList.add("border-b-2", "border-blue-600", "text-blue-600");
-        logSection.classList.remove("hover:text-blue-600");
-        register.reset();
-    }
+            </style>
+        </head>
+    </head>
+    <body class="font-inter flex h-screen">
+        <div class="xl:w-3/5 md:w-1/2" id="placeholder">
+            <div class="fixed xl:w-3/5 md:w-1/2 h-screen md:flex hidden justify-center items-center">
+                <img
+                    src="https://r4.wallpaperflare.com/wallpaper/54/325/66/work-in-progress-wallpaper-31f17e89d59362d04eddb9667eead6b8.jpg"
+                    alt="wallpaper"
+                    class="absolute w-full h-full object-cover"
+                />
 
-    function hideLogin() {
-        register.classList.remove("hidden");
-        login.classList.add("hidden");
-        logSection.classList.remove("border-b-2", "border-blue-600", "text-blue-600");  
-        logSection.classList.add("hover:text-blue-600");
-        regSection.classList.add("border-b-2", "border-blue-600", "text-blue-600");
-        regSection.classList.remove("hover:text-blue-600");
-        login.reset();
-    }
-</script>
-{% endblock %}
+                <div
+                    id="shade"
+                    class="absolute w-full h-full opacity-60 bg-black"
+                ></div>
+
+                <div class="text-wrap flex flex-col gap-8 z-10 text-white 2xl:px-40 xl:px-24 px-14">
+                    <div class="xl:text-5xl text-4xl font-bold tracking-wider">
+                        WELCOME TO NOTECRAFT
+                    </div>
+                    <div class="tracking-wide xl:text-lg">
+                        Our platform transforms your textbook PDFs and images into
+                        comprehensive study materials. Join us at Notecraft and
+                        elevate your study game with innovative tools designed for
+                        today's learners.
+                        <span class="font-semibold">STUDY SMARTER NOT HARDER!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div
+            id="authentication"
+            class="xl:w-2/5 md:w-1/2 flex items-center relative"
+        >
+            <div
+                class="absolute top-0 left-0 flex items-center gap-1 overflow-hidden lg:py-12 lg:px-20 py-8 px-10"
+            >
+                <svg
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    class="w-5"
+                    viewBox="26 0 148.00001525878906 200"
+                >
+                    <g
+                        data-paper-data='{"fillRule":"nonzero","initialText":"N","selectedEffects":{"container":"","transformation":"","pattern":""},"bounds":{"x":217.44286509218176,"y":115,"width":115.11426981563648,"height":155.56036461699193},"isIcon":"true","iconType":"initial","iconStyle":"standalone","rawInitialId":572}'
+                    >
+                        <path
+                            d="M174,4.85714c0,-2.57143 -2.28571,-4.85714 -4.85714,-4.85714h-16.28571c-12.28571,0 -22.28571,10 -22.28571,22.28571v40.57143l-56.85714,-56.85714c-4,-3.71429 -9.42857,-6 -15.14286,-6h-27.71429c-2.57143,0 -4.85714,2.28571 -4.85714,4.85714v5.71429c0,5.71429 2.28571,11.14286 6,15.14286l114,114c2.85714,2.85714 6.85714,4.57143 11.42857,4.57143c9.14286,0 16.57143,-7.42857 16.57143,-16.57143zM26,195.14286c0,2.57143 2.28571,4.85714 4.85714,4.85714h16.28571c12.28571,0 22.28571,-10 22.28571,-22.28571v-40.57143l56.85714,56.85714c4,3.71429 9.42857,6 15.14286,6h27.71429c2.57143,0 4.85714,-2.28571 4.85714,-4.85714v-5.71429c0,-5.71429 -2.28571,-11.14286 -6,-15.14286l-114,-114c-2.85714,-2.85714 -6.85714,-4.57143 -11.42857,-4.57143c-9.14286,0 -16.57143,7.42857 -16.57143,16.57143z"
+                            fill-rule="nonzero"
+                        ></path>
+                    </g>
+                </svg>
+                <div class="text-xl font-bold tracking-widest select-none">
+                    OTECRAFT
+                </div>
+            </div>
+
+            <div
+                class="absolute top-1/3 left-0 w-full lg:px-20 px-10 flex flex-col gap-6 rounded overflow-hidden"
+            >
+                <div id="welcomeText" class="text-3xl font-bold tracking-wider text-center">
+                    Join Us Today!
+                </div>  
+
+                <div class="flex justify-center gap-5">
+                    <button
+                        id="regSection"
+                        onclick="hideLogin()"
+                        class="flex-1 text-center py-3 text-blue-600 border-b-2 border-blue-600 font-semibold"
+                    >
+                        Sign Up
+                    </button>
+                    <button
+                        id="logSection"
+                        onclick="hideRegister()"
+                        class="flex-1 text-center py-3 font-semibold hover:text-blue-600"
+                    >
+                        Sign In
+                    </button>
+                </div>
+
+                <form
+                    id="registerUser"
+                    class="flex flex-col gap-3"
+                    onsubmit="registerUser(event)"
+                >
+                    <div
+                        class="flex items-center border-2 py-2 px-3 rounded-lg"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="text-gray-400 icon icon-tabler icon-tabler-user"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            stroke-width="2"
+                            stroke="currentColor"
+                            fill="none"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                stroke="none"
+                                d="M0 0h24v24H0z"
+                                fill="none"
+                            ></path>
+                            <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
+                            <path
+                                d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"
+                            ></path>
+                        </svg>
+                        <input
+                            id="regUname"
+                            class="pl-2 w-full outline-none border-none"
+                            type="text"
+                            name="username"
+                            placeholder="Username"
+                            autocomplete="off"
+                            required
+                        />
+                    </div>
+
+                    <div
+                        class="flex items-center border-2 py-2 px-3 rounded-lg"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="text-gray-400"
+                            fill="none"
+                            width="20"
+                            height="20"
+                            stroke-width="1.5"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+                            />
+                        </svg>
+                        <input
+                            id="regEmail"
+                            class="pl-2 w-full outline-none border-none"
+                            type="email"
+                            name="email"
+                            placeholder="Email Address"
+                            autocomplete="off"
+                            required
+                        />
+                    </div>
+
+                    <div
+                        class="flex items-center border-2 py-2 px-3 rounded-lg"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="text-gray-400 icon icon-tabler icon-tabler-lock"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            stroke-width="2"
+                            stroke="currentColor"
+                            fill="none"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                stroke="none"
+                                d="M0 0h24v24H0z"
+                                fill="none"
+                            ></path>
+                            <path
+                                d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z"
+                            ></path>
+                            <path
+                                d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"
+                            ></path>
+                            <path d="M8 11v-4a4 4 0 1 1 8 0v4"></path>
+                        </svg>
+                        <input
+                            id="regPass"
+                            class="pl-2 w-full outline-none border-none"
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            required
+                        />
+                    </div>
+
+                    <div
+                        class="flex items-center border-2 py-2 px-3 rounded-lg"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="text-gray-400 icon icon-tabler icon-tabler-lock"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            stroke-width="2"
+                            stroke="currentColor"
+                            fill="none"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                stroke="none"
+                                d="M0 0h24v24H0z"
+                                fill="none"
+                            ></path>
+                            <path
+                                d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z"
+                            ></path>
+                            <path
+                                d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"
+                            ></path>
+                            <path d="M8 11v-4a4 4 0 1 1 8 0v4"></path>
+                        </svg>
+                        <input
+                            id="confirmPass"
+                            class="pl-2 w-full outline-none border-none"
+                            type="password"
+                            name="confirmation"
+                            placeholder="Confirm Password"
+                            required
+                        />
+                    </div>
+                    <input
+                        type="submit"
+                        class="self-center cursor-pointer bg-blue-500 py-2 px-5 my-2 rounded hover:bg-blue-600 text-white font-semibold"
+                        value="Sign Up"
+                    />
+                </form>
+
+                <form
+                    id="loginUser"
+                    class="hidden flex flex-col gap-3"
+                    onsubmit="loginUser(event)"
+                >
+                    <div
+                        class="flex items-center border-2 py-2 px-3 rounded-lg"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="text-gray-400 icon icon-tabler icon-tabler-user"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            stroke-width="2"
+                            stroke="currentColor"
+                            fill="none"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                stroke="none"
+                                d="M0 0h24v24H0z"
+                                fill="none"
+                            ></path>
+                            <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
+                            <path
+                                d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"
+                            ></path>
+                        </svg>
+                        <input
+                            id="logUname"
+                            class="pl-2 w-full outline-none border-none"
+                            type="text"
+                            name="username"
+                            placeholder="Username"
+                            autocomplete="off"
+                            required
+                        />
+                    </div>
+                    <div
+                        class="flex items-center border-2 py-2 px-3 rounded-lg"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="text-gray-400 icon icon-tabler icon-tabler-lock"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            stroke-width="2"
+                            stroke="currentColor"
+                            fill="none"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                stroke="none"
+                                d="M0 0h24v24H0z"
+                                fill="none"
+                            ></path>
+                            <path
+                                d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z"
+                            ></path>
+                            <path
+                                d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"
+                            ></path>
+                            <path d="M8 11v-4a4 4 0 1 1 8 0v4"></path>
+                        </svg>
+                        <input
+                            id="logPass"
+                            class="pl-2 w-full outline-none border-none"
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            required
+                        />
+                    </div>
+                    <input
+                        type="submit"
+                        class="self-center cursor-pointer bg-blue-500 py-2 px-5 my-2 rounded hover:bg-blue-600 text-white font-semibold"
+                        value="Sign In"
+                    />
+                </form>
+            </div>
+        </div>
+
+        <script>
+            const register = document.querySelector("#registerUser");
+            const login = document.querySelector("#loginUser");
+            const regSection = document.querySelector("#regSection");
+            const logSection = document.querySelector("#logSection");
+            const welcomeText = document.querySelector("#welcomeText");
+
+            function registerUser(event) {
+                event.preventDefault();
+                event.target.disabled = true;
+                const uname = document.querySelector("#regUname");
+                const email = document.querySelector("#regEmail");
+                const pass = document.querySelector("#regPass");
+                const confirmPass = document.querySelector("#confirmPass");
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const next = urlParams.get("next") || "";
+
+                if (pass.value === confirmPass.value) {
+                    fetch("/register", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": "{{csrf_token}}",
+                        },
+                        body: JSON.stringify({
+                            username: uname.value,
+                            email: email.value,
+                            password: pass.value,
+                        }),
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            console.log(data);
+                            if (data.success == true) {
+                                window.location.href = next;
+                            } else {
+                                alert(data.Error);
+                            }
+                        });
+                } else {
+                    alert("Passwords do not match");
+                }
+                event.target.disabled = false;
+            }
+
+            function loginUser(event) {
+                event.preventDefault();
+                event.target.disabled = true;
+                const uname = document.querySelector("#logUname");
+                const pass = document.querySelector("#logPass");
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const next = urlParams.get("next") || "";
+
+                fetch("/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{csrf_token}}",
+                    },
+                    body: JSON.stringify({
+                        username: uname.value,
+                        password: pass.value,
+                    }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log(data);
+                        if (data.success == true) {
+                            window.location.href = next;
+                        } else {
+                            alert(data.Error);
+                        }
+                    });
+                event.target.disabled = false;
+            }
+
+            function hideRegister() {
+                login.classList.remove("hidden");
+                register.classList.add("hidden");
+                welcomeText.innerText = "Welcome Back!";
+                regSection.classList.remove(
+                    "border-b-2",
+                    "border-blue-600",
+                    "text-blue-600"
+                );
+                regSection.classList.add("hover:text-blue-600");
+                logSection.classList.add(
+                    "border-b-2",
+                    "border-blue-600",
+                    "text-blue-600"
+                );
+                logSection.classList.remove("hover:text-blue-600");
+                register.reset();
+            }
+
+            function hideLogin() {
+                register.classList.remove("hidden");
+                login.classList.add("hidden");
+                welcomeText.innerText = "Join Us Today!";
+                logSection.classList.remove(
+                    "border-b-2",
+                    "border-blue-600",
+                    "text-blue-600"
+                );
+                logSection.classList.add("hover:text-blue-600");
+                regSection.classList.add(
+                    "border-b-2",
+                    "border-blue-600",
+                    "text-blue-600"
+                );
+                regSection.classList.remove("hover:text-blue-600");
+                login.reset();
+            }
+        </script>
+    </body>
+</html>

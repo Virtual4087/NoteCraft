@@ -13,6 +13,7 @@ let index = 0;
 // Switching between study material and test
 function switchToTest(event, token, id){
     event.target.disabled = true;
+    console.log(id);
     event.target.innerHTML = "Generating questions...";
     fetch("/test", {
         method: "POST",
@@ -108,6 +109,7 @@ function submitAnswers(){
         }         
         }else{
             alert("Please answer all questions");
+            console.log(key, value)
             marks = 0;
             return true;
         }

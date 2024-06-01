@@ -5,17 +5,22 @@ from .models import Chapter, User
 from django.contrib.auth import login, logout, authenticate
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
 import json, random
 
 # Create your views here.
 
+@login_required
 def index(request):
+    return render(
+        request,
+        "notecraft/index.html",
+        {"studMats": request.user.UserChapters.order_by("-created_at")[:5]},
+    )
+
+def auth(request):
     if request.user.is_authenticated:
-        return render(
-            request,
-            "notecraft/index.html",
-            {"studMats": request.user.UserChapters.order_by("-created_at")[:5]},
-        )
+        return redirect("index")
     return render(request, "notecraft/auth.html")
 
 def registerUser(request):
@@ -31,10 +36,16 @@ def registerUser(request):
                 )
                 user.save()
                 login(request, user)
-            except Exception as e:
-                return JsonResponse({"success": False, "Error": str(e)})
+            except IntegrityError as e:
+                if "username" in str(e):
+                    return JsonResponse({"success": False, "Error": "Username already taken!"})
+                else:
+                    return JsonResponse({"success": False, "Error": "Email already in use!"})
+            except:
+                return JsonResponse({"success": False, "Error": "Failed to register user."})
+            
             return JsonResponse({"success": True})
-        return JsonResponse({"success": False, "Error": "empty fields"})
+        return JsonResponse({"success": False, "Error": "Fields cannot be left empty!"})
     return redirect("index")
 
 
@@ -63,7 +74,6 @@ def image2text(request):
         result = ""
         images = request.FILES.getlist("images")
         pdf = request.FILES.get("pdf")
-
         if len(images) > 0:
             for image in images:
                 if image.size > 1000000:
@@ -91,36 +101,36 @@ def image2text(request):
 def text2studMat(request):
     if request.method == "POST":
         data = json.loads(request.body.decode("utf-8"))
-        prompt = data.get("prompt").strip()
+        ogPrompt = data.get("prompt").strip()
+        prompt = ogPrompt
+        error = None
+        studMat = None
         if len(prompt)/4 > 35000:
             return JsonResponse({"success": False, "Error": "Text too long."}) 
-        studMat = GenStudyMaterial(prompt)
-        json_studMat = None
         count = 1
-        while count < 3:
+        
+        while count<4:
             try:
+                studMat = GenStudyMaterial(prompt)
                 json_studMat = json.loads(studMat.choices[0].message.content)
+                
                 if len(json_studMat["FC"]) < 5:
                     raise ValueError("Invalid Output: Not enough flashcards")
                 break
-            except Exception as e:
-                count += 1
-                json_studMat = None
-                if "Not enough flashcards" in str(e):
-                    studMat = GenStudyMaterial(
-                        prompt + "\nYou must provide at least 5 flashcards."
-                    )
+        
+            except Exception as e:  
+                error = str(e)    
+                if "Error code: 429" in str(e): 
+                    return JsonResponse({"success": False, "Error": error})
+                elif "Not enough flashcards" in str(e):
+                    prompt = ogPrompt + "\nYou must provide at least 5 flashcards."
                 else:
-                    studMat = GenStudyMaterial(
-                        prompt + "\nThe output must be in proper JSON format."
-                    )
+                    prompt = ogPrompt + "\nThe output must be in proper JSON format."
+            count += 1
 
-        if not json_studMat:
-            try:
-                json_studMat = json.loads(studMat.choices[0].message.content)
-            except Exception as error:
-                return JsonResponse({"success": False, "Error" : f"\nTries Taken: {count}\n\nResponse: {studMat}\n\nError: {str(error)}"})
-
+        if count >= 4:
+            return JsonResponse({"success": False, "Error" : f"\nTries Taken: {count}\n\nResponse: {studMat}\n\nError: {error}"})
+        
         chapter = Chapter.objects.create(
             user=request.user,
             OCRText=prompt,
@@ -143,12 +153,13 @@ def test(request):
         except:
             return JsonResponse({"success": False, "Error": "Invalid Chapter"})
         prompt = chapter.OCRText
-        questions = GenQuestions(prompt)
         json_questions = None
         count = 1
+        error = None
 
-        while count < 3:
+        while count < 4:
             try:
+                questions = GenQuestions(prompt)
                 json_questions = json.loads(questions.choices[0].message.content)
                 mcq_key = next(iter(json_questions["MCQ"]))
                 tof_key = next(iter(json_questions["TOF"]))
@@ -167,50 +178,32 @@ def test(request):
                 
                 elif (len(json_questions["MCQ"]) + len(json_questions["TOF"])) != 10:
                     raise ValueError("Invalid Output: Not enough questions")
-
                 break
 
             except Exception as e:
-                count += 1
-                json_questions = None
+                error = str(e)
                 if "Not enough TOF choices" in str(e):
-                    questions = GenQuestions(
-                        prompt
-                        + '\nRemember to provide exactly 2 choices for each TOF question in this format {"True":true/false, "False":true/false}.'
-                    )
+                    prompt = chapter.OCRText + '\nRemember to provide exactly 2 choices for each TOF question in this format {"True":true/false, "False":true/false}.'
 
                 elif "Not enough MCQ choices" in str(e):
-                    questions = GenQuestions(
-                        prompt
-                        + "\nRemember to provide exactly 4 choices for MCQ questions."
-                    )
+                    prompt = chapter.OCRText + "\nRemember to provide exactly 4 choices for MCQ questions."
 
                 elif "Wrong MCQ choices" in str(e):
-                    questions = GenQuestions(
-                        prompt
-                        + "\nRemember the choices in MCQ should not contain any sign numbers like '1', 'a' or 'i' and there should be exactly 4 choices."
-                    )
+                    prompt = chapter.OCRText + "\nRemember the choices in MCQ should not contain any sign numbers like '1', 'a' or 'i' and there should be exactly 4 choices."
+
                 elif "Wrong TOF/MCQ questions" in str(e):
-                    questions = GenQuestions(
-                        prompt
-                        + "\nRemember to provide proper questions in TOF and MCQ. DOn't mistakenly write just 'Question1' or 'QuestionA' instead of actual questions."
-                    )
+                    prompt = chapter.OCRText + "\nRemember to provide proper questions in TOF and MCQ. DOn't mistakenly write just 'Question1' or 'QuestionA' instead of actual questions."
 
                 elif "Not enough questions" in str(e):
-                    questions = GenQuestions(
-                        prompt + "\nRemember to provide 7 MCQs and 3 MCQs exactly."
-                    )
+                    prompt = chapter.OCRText + "\nRemember to provide 7 MCQs and 3 MCQs exactly."
+
                 else:
-                    questions = GenQuestions(
-                        prompt + "\n The output must be in proper JSON format."
-                    )
+                    prompt = chapter.OCRText + "\n The output must be in proper JSON format."
+            
+            count += 1
 
-        if not json_questions:
-            try:
-                json_questions = json.loads(questions.choices[0].message.content)
-            except Exception as error:
-                return JsonResponse({"success": False, "Error": str(error)})
-
+        if count >= 4:
+            return JsonResponse({"success": False, "Error": error})
         # shuffling the questions
         json_questions = {**json_questions["MCQ"], **json_questions["TOF"]}
         list_questions = list(json_questions.items())

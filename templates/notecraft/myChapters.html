@@ -6,11 +6,11 @@
         class="list list-inside space-y-3 px-2"
     >
         {% for studMat in studMats %}
-        <li class="bg-gray-100 rounded w-full px-5 py-3 flex justify-between">
+        <li class="bg-gray-100 rounded w-full px-5 py-3 flex md:flex-row md:justify-between flex-col gap-1">
             <a href="{% url 'chapter' %}?studMat={{ studMat.id|urlencode }}" class="font-semibold hover:text-blue-700"
                 >{{ studMat.title }}</a
             >
-            <div class="text-sm text-gray-700 flex-none text-right">{{ studMat.created_at|date:"M d, Y" }}</div>
+            <div class="text-xs text-gray-700 flex-none md:text-right md:text-sm">{{ studMat.created_at|date:"M d, Y" }}</div>
         </li>
         {% endfor %}
     </ol>
