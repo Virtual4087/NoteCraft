@@ -81,7 +81,7 @@
             </div>
 
             <div
-                class="absolute top-1/3 left-0 w-full lg:px-20 px-10 flex flex-col gap-6 rounded overflow-hidden"
+                class="absolute top-1/3 lg:top-1/4 left-0 w-full lg:px-20 px-10 flex flex-col gap-6 rounded overflow-hidden"
             >
                 <div id="welcomeText" class="text-3xl font-bold tracking-wider text-center">
                     Join Us Today!
@@ -391,6 +391,7 @@
             }
 
             function loginUser(event) {
+                console.log("{{csrf_token}}")
                 event.preventDefault();
                 event.target.disabled = true;
                 const uname = document.querySelector("#logUname");

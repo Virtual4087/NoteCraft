@@ -1,10 +1,10 @@
 {% extends 'notecraft/layout.html' %} {% block body %}
 
 <div class="w-full flex flex-col items-center lg:my-16 md:my-13 my-10 gap-3">
-    <div class="lg:text-5xl md:text-4xl text-3xl font-bold tracking-wide text-center">
+    <div class="xl:text-5xl lg:text-4xl text-3xl font-bold tracking-wide text-center">
         Transform Images and PDFs into study materials
     </div>
-    <div class="lg:text-3xl md:text-2xl text-xl font-bold text-blue-700 text-center">Study Smarter Not Harder</div>
+    <div class="xl:text-3xl lg:text-2xl text-xl font-bold text-blue-700 text-center">Study Smarter Not Harder</div>
 </div>
 <div
     class="container flex flex-col items-center gap-10 m-auto md:w-2/3 xl:w-1/2 2xl:w-2/5 border-2 border-gray-600 rounded-xl pb-10 overflow-hidden"
@@ -227,6 +227,7 @@
             if (data.success) {
                 window.location.href = `/chapter?studMat=${data.id}`;
             } else {
+                console.log(data.Error)
                 submitButton.disabled = false;
                 imgButton.disabled = false;
                 pdfButton.disabled = false;

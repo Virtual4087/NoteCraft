@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 
 
 # Create your models here.
@@ -19,6 +20,9 @@ class Chapter(models.Model):
     summary = models.TextField()
     notes = models.JSONField(default=list)
     flashcards = models.JSONField(default=dict)
-    mcqs = models.JSONField(default=dict, null=True)
-    tofs = models.JSONField(default=dict, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    last_opened = models.DateTimeField(null=True, blank=True)
+
+    def update_last_opened(self):
+        self.last_opened = timezone.now()
+        self.save()

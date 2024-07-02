@@ -1,9 +1,40 @@
 {% extends 'notecraft/layout.html' %} {% block body %}
-<div class="m-auto container my-16 flex flex-col gap-6" id="studMatList">
+<div class="m-auto container my-16 flex flex-col gap-6">
+
     <div class="text-4xl font-bold text-center w-full">Your Study Materials</div>
     <div class="border border-black"></div>
+    <div class="ms-auto flex items-center gap-3">
+        <label for="asce" class="text-sm font-medium tracking-wide stroke-blue-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-sort-ascending" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M4 6l7 0" />
+                <path d="M4 12l7 0" />
+                <path d="M4 18l9 0" />
+                <path d="M15 9l3 -3l3 3" />
+                <path d="M18 6l0 12" />
+            </svg>
+            <input type="radio" name="order" value="asce" id="asce" class="hidden" checked>
+        </label>
+        <label for="desc" class="text-sm font-medium tracking-wide stroke-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-sort-descending" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M4 6l9 0" />
+                <path d="M4 12l7 0" />
+                <path d="M4 18l7 0" />
+                <path d="M15 15l3 3l3 -3" />
+                <path d="M18 6l0 12" />
+            </svg>
+            <input type="radio" name="order" value="desc" id="desc" class="hidden">
+        </label>
+        
+        <select id="sortBy" class="text-sm rounded-md px-1.5 py-1 border-2 border-gray-200 focus:outline-none">
+            <option value="created_at" selected>Date</option>
+            <option value="last_opened">Last opened</option>
+        </select>
+    </div>
     <ol
         class="list list-inside space-y-3 px-2"
+        id="studMatList"
     >
         {% for studMat in studMats %}
         <li class="bg-gray-100 rounded w-full px-5 py-3 flex md:flex-row md:justify-between flex-col gap-1">
@@ -15,4 +46,92 @@
         {% endfor %}
     </ol>
 </div>
+<script>
+    var page = 1
+    var hasNext = "{{ hasNext }}" == "True";
+    const studMatList = document.querySelector('#studMatList');
+    const sortBy = document.querySelector('#sortBy')
+    const radioButtons = document.querySelectorAll('input[type="radio"][name="order"]')
+    var radioValue = "asce"
+
+    window.addEventListener('scroll', function() {
+        // Get the current scroll position and the height of the document
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight;
+
+        // Check if the user has scrolled to the bottom
+        if (scrollTop + clientHeight >= scrollHeight) {
+            loadMore(++page)
+            console.log('Reached the bottom of the page');
+            console.log(hasNext)
+        }
+    });
+
+    radioButtons.forEach(radio => {
+        radio.onchange = function() {
+            radioButtons.forEach(radio => {
+                radio.parentElement.classList.replace('stroke-blue-700', 'stroke-gray-700')
+            })
+            if (radio.checked){
+                radio.parentElement.classList.replace('stroke-gray-700','stroke-blue-700')
+                radioValue = radio.value
+                rePopulate();
+            }
+        }
+    })
+
+    sortBy.onchange = rePopulate
+
+    function rePopulate(){
+        // To prevent flickering effect when loading repopulating study materials
+        var curHeight = studMatList.offsetHeight;
+        studMatList.style.minHeight = curHeight + 'px';
+        page = 1
+        hasNext = true;
+        studMatList.innerHTML = ''
+        loadMore(page)
+    }
+
+    function loadMore(page){
+        if (!hasNext){
+            console.log('No more study materials to load')
+            return
+        }
+        fetch(`/myChapters?sortBy=${sortBy.value}&order=${radioValue}&page=${page}`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success){
+                data.studMats.forEach(studMat => {
+                const li = document.createElement('li')
+                li.className = "bg-gray-100 rounded w-full px-5 py-3 flex md:flex-row md:justify-between flex-col gap-1"
+                li.innerHTML = `
+                    <a href="{% url 'chapter' %}?studMat=${studMat.id}" class="font-semibold hover:text-blue-700">${studMat.title}</a>
+                    <div class="text-xs text-gray-700 flex-none md:text-right md:text-sm">${formatDate(studMat.created_at)}</div>
+                `
+                studMatList.appendChild(li)
+                hasNext = data.hasNext
+                // To remove the min-height set in rePopulate()
+                studMatList.style.minHeight = '0px';
+            });
+            }
+            else{
+                console.log('Failed to load more study materials')
+                console.log(data.error)
+            }
+        })
+    }
+
+    function formatDate(utcDate) {
+        const date = new Date(utcDate);
+        const options = { year: 'numeric', month: 'short', day: '2-digit' };
+        return date.toLocaleDateString('en-US', options);
+    }
+</script>
 {% endblock %}

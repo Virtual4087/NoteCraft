@@ -6,6 +6,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
+from django.core.paginator import Paginator
 import json, random
 
 # Create your views here.
@@ -16,6 +17,32 @@ def index(request):
         request,
         "notecraft/index.html",
         {"studMats": request.user.UserChapters.order_by("-created_at")[:5]},
+    )
+
+@login_required
+def myChapters(request):
+    sortBy = request.GET.get("sortBy", "created_at")
+    order = request.GET.get("order", "asc")
+    pageNum = request.GET.get("page", 1)
+
+    if order == "desc":
+        studMats = request.user.UserChapters.all().order_by(sortBy)
+    else:
+        studMats = request.user.UserChapters.all().order_by(f"-{sortBy}")
+
+    try:
+        p = Paginator(studMats, 15)
+        page = p.get_page(pageNum);
+    except Exception as e:
+        return JsonResponse({"success": False, "Error": e})
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({"studMats" : list(page.object_list.values()), "hasNext": page.has_next(), "success" : True})
+
+    return render(
+        request,
+        "notecraft/myChapters.html",
+        {"studMats": p.get_page(1), "hasNext": p.get_page(1).has_next()},
     )
 
 def auth(request):
@@ -112,7 +139,7 @@ def text2studMat(request):
         while count<4:
             try:
                 studMat = GenStudyMaterial(prompt)
-                json_studMat = json.loads(studMat.choices[0].message.content)
+                json_studMat = json.loads(studMat)
                 
                 if len(json_studMat["FC"]) < 5:
                     raise ValueError("Invalid Output: Not enough flashcards")
@@ -125,11 +152,11 @@ def text2studMat(request):
                 elif "Not enough flashcards" in str(e):
                     prompt = ogPrompt + "\nYou must provide at least 5 flashcards."
                 else:
-                    prompt = ogPrompt + "\nThe output must be in proper JSON format."
+                    prompt = ogPrompt + "\nDon't wrap the output in ```json``` this way. Just directly provide the json data. The output must be in proper JSON format."
             count += 1
 
         if count >= 4:
-            return JsonResponse({"success": False, "Error" : f"\nTries Taken: {count}\n\nResponse: {studMat}\n\nError: {error}"})
+            return JsonResponse({"success": False, "Error" : f"\nTries Taken: {count}\n\nResponse: {studMat}\n\nError: {error} \n\n prompt: {prompt}"})
         
         chapter = Chapter.objects.create(
             user=request.user,
@@ -160,7 +187,7 @@ def test(request):
         while count < 4:
             try:
                 questions = GenQuestions(prompt)
-                json_questions = json.loads(questions.choices[0].message.content)
+                json_questions = json.loads(questions)
                 mcq_key = next(iter(json_questions["MCQ"]))
                 tof_key = next(iter(json_questions["TOF"]))
 
@@ -183,27 +210,27 @@ def test(request):
             except Exception as e:
                 error = str(e)
                 if "Not enough TOF choices" in str(e):
-                    prompt = chapter.OCRText + '\nRemember to provide exactly 2 choices for each TOF question in this format {"True":true/false, "False":true/false}.'
+                    prompt = chapter.OCRText + '\nRemember to provide exactly 2 choices for each TOF question in this format {"True":true/false, "False":true/false and check the output format for TOF questions again.}.'
 
                 elif "Not enough MCQ choices" in str(e):
                     prompt = chapter.OCRText + "\nRemember to provide exactly 4 choices for MCQ questions."
 
                 elif "Wrong MCQ choices" in str(e):
-                    prompt = chapter.OCRText + "\nRemember the choices in MCQ should not contain any sign numbers like '1', 'a' or 'i' and there should be exactly 4 choices."
+                    prompt = chapter.OCRText + "\nRemember the choices in MCQ should not contain any sign numbers like '1', 'a' or 'i' and the 'Question'/'choice' keys in the output format should be replaced with the actual question/choice."
 
                 elif "Wrong TOF/MCQ questions" in str(e):
-                    prompt = chapter.OCRText + "\nRemember to provide proper questions in TOF and MCQ. DOn't mistakenly write just 'Question1' or 'QuestionA' instead of actual questions."
+                    prompt = chapter.OCRText + "\nRemember to provide proper questions in TOF and MCQ. DOn't mistakenly write just 'Question' or 'Question' instead of actual questions."
 
                 elif "Not enough questions" in str(e):
                     prompt = chapter.OCRText + "\nRemember to provide 7 MCQs and 3 MCQs exactly."
 
                 else:
-                    prompt = chapter.OCRText + "\n The output must be in proper JSON format."
+                    prompt = chapter.OCRText + "\nDon't wrap the output in ```json``` this way. Just directly provide the json data. The output must be in proper JSON format."
             
             count += 1
 
         if count >= 4:
-            return JsonResponse({"success": False, "Error": error})
+            return JsonResponse({"success": False, "Error": error, "output" : json_questions})
         # shuffling the questions
         json_questions = {**json_questions["MCQ"], **json_questions["TOF"]}
         list_questions = list(json_questions.items())
@@ -221,14 +248,7 @@ def chapter(request):
     id = request.GET.get("studMat", None)
     try:
         chapter = Chapter.objects.get(user=request.user, id=id)
-    except:
+        chapter.update_last_opened()
+    except Exception:
         chapter = None
     return render(request, "notecraft/studyMaterial.html", {"studMat": chapter})
-
-@login_required
-def myChapters(request):
-    return render(
-        request,
-        "notecraft/myChapters.html",
-        {"studMats": request.user.UserChapters.all()},
-    )
