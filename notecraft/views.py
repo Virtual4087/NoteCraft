@@ -138,25 +138,25 @@ def text2studMat(request):
         
         while count<4:
             try:
-                studMat = GenStudyMaterial(prompt)
+                studMat = GenStudyMaterial(prompt, "anthropic")
                 json_studMat = json.loads(studMat)
                 
-                if len(json_studMat["FC"]) < 5:
+                if len(json_studMat["FC"]) < 3:
                     raise ValueError("Invalid Output: Not enough flashcards")
                 break
         
             except Exception as e:  
                 error = str(e)    
-                if "Error code: 429" in str(e): 
-                    return JsonResponse({"success": False, "Error": error})
+                if "Invalid API" in error or "Error code: 429" in error: 
+                    return JsonResponse({"success": False, "Error": error, "output" : studMat, "tries" : count})
                 elif "Not enough flashcards" in str(e):
                     prompt = ogPrompt + "\nYou must provide at least 5 flashcards."
                 else:
-                    prompt = ogPrompt + "\nDon't wrap the output in ```json``` this way. Just directly provide the json data. The output must be in proper JSON format."
+                    prompt = ogPrompt + "\nDon't wrap the output in ```json``` this way. Just provide the json data only. The entire output must be in proper JSON format."
             count += 1
 
         if count >= 4:
-            return JsonResponse({"success": False, "Error" : f"\nTries Taken: {count}\n\nResponse: {studMat}\n\nError: {error} \n\n prompt: {prompt}"})
+            return JsonResponse({"success": False, "Tries Taken" : count, "Response": studMat, "Error" : error, "prompt": prompt})
         
         chapter = Chapter.objects.create(
             user=request.user,
@@ -186,7 +186,7 @@ def test(request):
 
         while count < 4:
             try:
-                questions = GenQuestions(prompt)
+                questions = GenQuestions(prompt, "anthropic")
                 json_questions = json.loads(questions)
                 mcq_key = next(iter(json_questions["MCQ"]))
                 tof_key = next(iter(json_questions["TOF"]))
@@ -209,28 +209,31 @@ def test(request):
 
             except Exception as e:
                 error = str(e)
-                if "Not enough TOF choices" in str(e):
+                if "Invalid API" in error or "Error code: 429" in error: 
+                    return JsonResponse({"success": False, "Error": error, "output" : questions, "tries" : count})
+
+                elif "Not enough TOF choices" in error:
                     prompt = chapter.OCRText + '\nRemember to provide exactly 2 choices for each TOF question in this format {"True":true/false, "False":true/false and check the output format for TOF questions again.}.'
 
-                elif "Not enough MCQ choices" in str(e):
+                elif "Not enough MCQ choices" in error:
                     prompt = chapter.OCRText + "\nRemember to provide exactly 4 choices for MCQ questions."
 
-                elif "Wrong MCQ choices" in str(e):
+                elif "Wrong MCQ choices" in error:
                     prompt = chapter.OCRText + "\nRemember the choices in MCQ should not contain any sign numbers like '1', 'a' or 'i' and the 'Question'/'choice' keys in the output format should be replaced with the actual question/choice."
 
-                elif "Wrong TOF/MCQ questions" in str(e):
+                elif "Wrong TOF/MCQ questions" in error:
                     prompt = chapter.OCRText + "\nRemember to provide proper questions in TOF and MCQ. DOn't mistakenly write just 'Question' or 'Question' instead of actual questions."
 
-                elif "Not enough questions" in str(e):
+                elif "Not enough questions" in error:
                     prompt = chapter.OCRText + "\nRemember to provide 7 MCQs and 3 MCQs exactly."
 
                 else:
-                    prompt = chapter.OCRText + "\nDon't wrap the output in ```json``` this way. Just directly provide the json data. The output must be in proper JSON format."
+                    prompt = chapter.OCRText + "\nDon't wrap the output in ```json``` this way. Just provide the json data only. The entire output must be in proper JSON format."
             
             count += 1
 
         if count >= 4:
-            return JsonResponse({"success": False, "Error": error, "output" : json_questions})
+            return JsonResponse({"success": False, "Error": error, "output" : questions, "tries" : count})
         # shuffling the questions
         json_questions = {**json_questions["MCQ"], **json_questions["TOF"]}
         list_questions = list(json_questions.items())

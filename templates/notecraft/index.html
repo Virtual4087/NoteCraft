@@ -197,6 +197,7 @@
         .then((data) => {
             console.log(data);
             if (data.success) {
+                console.log(data.text);
                 generateStudMat(data.text);
             } else {
                 submitButton.disabled = false;
