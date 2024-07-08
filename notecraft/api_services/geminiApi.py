@@ -22,7 +22,7 @@ def GenStudyMaterial(prompt):
                 Output Format:
                 {
                     "title": "Short title for the text",
-                    "summary": "Summary of the text. Approximately 10%%-15%% length of the original text",
+                    "summary": "Summary of the text. Approximately 25%%-30%% length of the original text",
                     "Notes" : ["note 1", "note 2", "note 3",....],
                     "FC": {"Front": "Back"},
                 }
@@ -32,7 +32,7 @@ def GenStudyMaterial(prompt):
                 Notes: Important points extracted from the text.
                 FC: Flashcards with key information having two sides i.e. front & back. 
 
-                Remember to make standard looking Flash Cards of the key points, write the summary strictly from a third person perspective and don't miss any important notes. The summary should be  10%%-15%% length of the original text, absolutely do not make it any longer than this! Make notes and flash cards according to the length of the text. Don't make too many flash cards/notes for short text and vice versa. Remember to make proper and meaningful flash cards that is not too long, don't just throw in random words. Also make sure the output is strictly in proper json format (this is compulsory). And don't use any Sign numbers like "1", "a", "A" or "i". Lastly, don't wrap the output in ```json``` this way. Just directly provide the json data.
+                Remember to make standard looking Flash Cards of the key points, write the summary strictly from a third person perspective and don't miss any important notes. The summary should be  25%%-30%% length of the original text, absolutely do not make it any longer than this! Make notes and flash cards according to the length of the text. Don't make too many flash cards/notes for short text and vice versa. Remember to make proper and meaningful flash cards that is not too long, don't just throw in random words. Also make sure the output is strictly in proper json format (this is compulsory). And don't use any Sign numbers like "1", "a", "A" or "i". Lastly, don't wrap the output in ```json``` this way. Just directly provide the json data.
                 Now, proceed with reading and understanding the content of the text, correcting any errors, and preparing the JSON output data accordingly.
             ''']
         },

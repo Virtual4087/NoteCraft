@@ -1,50 +1,48 @@
 {% extends 'notecraft/layout.html' %} {% block body %}
 <div class="m-auto container my-16 flex flex-col gap-6">
-
-    <div class="text-4xl font-bold text-center w-full">Your Study Materials</div>
-    <div class="border border-black"></div>
-    <div class="ms-auto flex items-center gap-3">
-        <label for="asce" class="text-sm font-medium tracking-wide stroke-blue-700">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-sort-ascending" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M4 6l7 0" />
-                <path d="M4 12l7 0" />
-                <path d="M4 18l9 0" />
-                <path d="M15 9l3 -3l3 3" />
-                <path d="M18 6l0 12" />
-            </svg>
-            <input type="radio" name="order" value="asce" id="asce" class="hidden" checked>
-        </label>
-        <label for="desc" class="text-sm font-medium tracking-wide stroke-gray-700">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-sort-descending" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M4 6l9 0" />
-                <path d="M4 12l7 0" />
-                <path d="M4 18l7 0" />
-                <path d="M15 15l3 3l3 -3" />
-                <path d="M18 6l0 12" />
-            </svg>
-            <input type="radio" name="order" value="desc" id="desc" class="hidden">
-        </label>
-        
-        <select id="sortBy" class="text-sm rounded-md px-1.5 py-1 border-2 border-gray-200 focus:outline-none">
-            <option value="created_at" selected>Date</option>
-            <option value="last_opened">Last opened</option>
-        </select>
+    <div class="flex justify-between">
+        <div class="text-3xl font-bold w-full">Study Materials</div>
+        <div class="ms-auto flex items-center gap-3">
+            <label for="asce" class="text-sm font-medium tracking-wide stroke-blue-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-sort-ascending" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M4 6l7 0" />
+                    <path d="M4 12l7 0" />
+                    <path d="M4 18l9 0" />
+                    <path d="M15 9l3 -3l3 3" />
+                    <path d="M18 6l0 12" />
+                </svg>
+                <input type="radio" name="order" value="asce" id="asce" class="hidden" checked>
+            </label>
+            <label for="desc" class="text-sm font-medium tracking-wide stroke-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-sort-descending" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M4 6l9 0" />
+                    <path d="M4 12l7 0" />
+                    <path d="M4 18l7 0" />
+                    <path d="M15 15l3 3l3 -3" />
+                    <path d="M18 6l0 12" />
+                </svg>
+                <input type="radio" name="order" value="desc" id="desc" class="hidden">
+            </label>
+            
+            <select id="sortBy" class="text-sm rounded-md px-1.5 py-1 border-2 border-gray-200 focus:outline-none">
+                <option value="created_at" selected>Date</option>
+                <option value="last_opened">Last opened</option>
+            </select>
+        </div>
     </div>
-    <ol
-        class="list list-inside space-y-3 px-2"
-        id="studMatList"
-    >
+    <div class="w-full mx-auto mt-8" id="studMatList">
         {% for studMat in studMats %}
-        <li class="bg-gray-100 rounded w-full px-5 py-3 flex md:flex-row md:justify-between flex-col gap-1">
-            <a href="{% url 'chapter' %}?studMat={{ studMat.id|urlencode }}" class="font-semibold hover:text-blue-700"
-                >{{ studMat.title }}</a
-            >
-            <div class="text-xs text-gray-700 flex-none md:text-right md:text-sm">{{ studMat.created_at|date:"M d, Y" }}</div>
-        </li>
+                <a class="border-l-2 border-gray-500 hover:border-l-4 hover:border-blue-400 hover:rounded-md transition-all duration-100 flex flex-col md:flex-row md:justify-between p-8" href="{% url 'chapter' %}?studMat={{ studMat.id|urlencode }}">
+                    <div class="mb-4 md:mb-0">
+                        <h3 class="text-xl font-bold mb-2">{{ studMat.title }}</h3>
+                        <p class="text-gray-600 text-sm">{{ studMat.created_at|date:"M d, Y" }}</p>
+                    </div>
+                    <p class="text-gray-700">Some description goes here...</p>
+                </a>
         {% endfor %}
-    </ol>
+    </div>
 </div>
 <script>
     var page = 1
@@ -109,13 +107,17 @@
         .then(data => {
             if (data.success){
                 data.studMats.forEach(studMat => {
-                const li = document.createElement('li')
-                li.className = "bg-gray-100 rounded w-full px-5 py-3 flex md:flex-row md:justify-between flex-col gap-1"
-                li.innerHTML = `
-                    <a href="{% url 'chapter' %}?studMat=${studMat.id}" class="font-semibold hover:text-blue-700">${studMat.title}</a>
-                    <div class="text-xs text-gray-700 flex-none md:text-right md:text-sm">${formatDate(studMat.created_at)}</div>
+                const a = document.createElement('a')
+                a.className = "border-l-2 border-gray-500 hover:border-l-4 hover:border-blue-400 hover:rounded-md transition-all duration-100 flex flex-col md:flex-row md:justify-between p-8"
+                a.href = `{% url 'chapter' %}?studMat=${studMat.id}`
+                a.innerHTML = `
+                    <div class="mb-4 md:mb-0">
+                        <h3 class="text-xl font-bold mb-2">${studMat.title}</h3>
+                        <p class="text-gray-600 text-sm">${formatDate(studMat.created_at)}</p>
+                    </div>
+                    <p class="text-gray-700">Some description goes here...</p>
                 `
-                studMatList.appendChild(li)
+                studMatList.appendChild(a)
                 hasNext = data.hasNext
                 // To remove the min-height set in rePopulate()
                 studMatList.style.minHeight = '0px';
