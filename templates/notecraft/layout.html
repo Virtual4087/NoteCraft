@@ -18,6 +18,9 @@
             .inner-shadow-left{
                 box-shadow: inset -10px 0px 10px -10px rgba(0, 0, 0, 0.1);
             }
+            .note-card {
+                background: linear-gradient(150deg, #f2f5f8b6 50%, #e6ebff 100%);
+            }
         </style>
     </head>
     <body class="font-inter relative">
@@ -109,8 +112,8 @@
             {% endif %}
         </div>
 
-        <div id="body" class="p-5">{% block body %} {% endblock %}</div>
-
+        <div class="p-5">{% block body %} {% endblock %}</div>
+    
         <script>
             const nav = document.querySelector("nav");
             const logo = document.querySelector("#logoIcon");
@@ -118,21 +121,6 @@
             const menu = document.querySelector("#menu");
             const sidebar = document.querySelector("#sidebar");
             window.addEventListener("scroll", () => {
-                // if (window.scrollY > 0) {
-                //     nav.classList.add("text-white", "bg-gray-800");
-                //     nav.classList.remove("bg-white");
-                //     nav.classList.replace("py-6", "py-5");
-                //     logo.classList.add("fill-white");
-                //     menu.classList.add("stroke-white");
-                //     sidebar.classList.add("text-white", "bg-gray-800");
-                // } else {
-                //     nav.classList.remove("text-white", "bg-gray-800");
-                //     nav.classList.add("bg-white");
-                //     nav.classList.replace("py-5", "py-6");
-                //     logo.classList.remove("fill-white");
-                //     menu.classList.remove("stroke-white");
-                //     sidebar.classList.remove("text-white", "bg-gray-800");
-                // }
                 if (window.scrollY > 0) {
                     nav.classList.add("shadow-md", "bg-blue-600");
                 } else {

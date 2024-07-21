@@ -21,6 +21,31 @@ def index(request):
 
 @login_required
 def myChapters(request):
+
+    if request.method == "PUT":
+        data = json.loads(request.body.decode("utf-8"))
+        try:
+            studMat = request.user.UserChapters.get(id=data.get("id"))
+        except:
+            return JsonResponse({"success": False, "Error": "Invalid Chapter"})
+
+        try:
+            studMat.update_title(data.get("title").strip())
+        except:
+            return JsonResponse({"success": False, "Error": "Invalid Title"})
+
+        return JsonResponse({"success": True})
+    
+    if request.method == "DELETE":
+        try:
+            studMat = request.user.UserChapters.get(id=request.GET.get("id"))
+            studMat.delete()
+        except Chapter.DoesNotExist:
+            return JsonResponse({"success": False, "Error": "Invalid Chapter", "id": request.GET.get("id")  }) 
+        except Exception as e:
+            return JsonResponse({"success": False, "Error": str(e)})
+        return JsonResponse({"success": True})
+        
     sortBy = request.GET.get("sortBy", "created_at")
     order = request.GET.get("order", "asc")
     pageNum = request.GET.get("page", 1)
@@ -138,7 +163,7 @@ def text2studMat(request):
         
         while count<4:
             try:
-                studMat = GenStudyMaterial(prompt, "anthropic")
+                studMat = GenStudyMaterial(prompt, "gemini")
                 json_studMat = json.loads(studMat)
                 
                 if len(json_studMat["FC"]) < 3:
@@ -180,13 +205,14 @@ def test(request):
         except:
             return JsonResponse({"success": False, "Error": "Invalid Chapter"})
         prompt = chapter.OCRText
+        questions = None
         json_questions = None
         count = 1
         error = None
 
         while count < 4:
             try:
-                questions = GenQuestions(prompt, "anthropic")
+                questions = GenQuestions(prompt, "gemini")
                 json_questions = json.loads(questions)
                 mcq_key = next(iter(json_questions["MCQ"]))
                 tof_key = next(iter(json_questions["TOF"]))

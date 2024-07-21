@@ -23,7 +23,7 @@ def GenStudyMaterial(prompt):
         Notes: Important points extracted from the text.
         FC: Flashcards with key information having two sides i.e. front & back. 
 
-        Remember to make standard looking Flash Cards of the key points, write the summary strictly from a third person perspective and don't miss any important notes. The summary should be  25%%-30%% length of the original text, absolutely do not make it any longer or shorter than this! Create notes and flash Cards according to the length of the text. Remember to make proper and meaningful flash cards, don't just throw in random words. Also make sure the output is strictly in proper json format (this is compulsory). And don't use any Sign numbers like "1", "a", "A" or "i". 
+        Remember to make standard looking Flash Cards of the key points, write the summary strictly from a third person perspective and don't miss any important notes. The summary should be  25%%-30%% length of the original text, absolutely do not make it any longer or shorter than this! Create notes and flash Cards according to the length of the text. Remember to make proper and meaningful flash cards. Also make sure the output is strictly in proper json format (this is compulsory). Don't use any sign numbers like "1", "a", "A" or "i". 
         Remember to only provide json data, don't write any unnecessary text like "I understand you'd like me to create MCQ and TOF questions based on this text." or any follow up text to the prompt. Just provide the json data.
         Now, proceed with reading and understanding the content of the text, correcting any errors, and preparing the JSON output data accordingly.""",
 

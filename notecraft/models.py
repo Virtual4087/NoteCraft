@@ -16,7 +16,7 @@ class Chapter(models.Model):
         User, on_delete=models.CASCADE, related_name="UserChapters"
     )
     OCRText = models.TextField()
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=75, blank=False, null=False)
     summary = models.TextField()
     notes = models.JSONField(default=list)
     flashcards = models.JSONField(default=dict)
@@ -25,4 +25,12 @@ class Chapter(models.Model):
 
     def update_last_opened(self):
         self.last_opened = timezone.now()
+        self.save()
+
+    def update_title(self, title):
+        if title == "":
+            raise ValueError("Title cannot be empty.")
+        if len(title) > 75:
+            raise ValueError("Title cannot be longer than 75 characters.")
+        self.title = title
         self.save()
