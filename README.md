@@ -63,14 +63,14 @@ Notecraft is an online platform that transforms users' images and PDFs of their 
 
 ## Contributing
 
-1. **Fork the repository**.
-2. **Create a new branch**:
+- **Fork the repository**.
+- **Create a new branch**:
    ```bash
    git checkout -b feature-branch
-3. **Commit your changes**:
+- **Commit your changes**:
    ```bash
    git commit -m 'Add new feature'
-4. **Push to the branch**:
+- **Push to the branch**:
    ```bash
    git push origin feature-branch
-5. **Open a Pull Request**.
+- **Open a Pull Request**.
