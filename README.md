@@ -34,21 +34,26 @@ Notecraft is an online platform that transforms users' images and PDFs of their 
    ```bash
    git clone https://github.com/yourusername/notecraft.git
    cd notecraft
+   
 2. **Set up a virtual environment**:
    ```bash
    python3 -m venv venv
-   source venv/bin/activate  
-3. **Install dependencies**:
+   source venv/bin/activate
+   
+4. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
-4. **Set up the database**:
+   
+5. **Set up the database**:
    ```bash
    python manage.py makemigrations
    python manage.py migrate
-5. **Create a superuser**:
+   
+6. **Create a superuser**:
    ```bash
    python manage.py createsuperuser
-6. **Run the server**:
+   
+7. **Run the server**:
    ```bash
    python manage.py runserver
 
@@ -63,14 +68,18 @@ Notecraft is an online platform that transforms users' images and PDFs of their 
 
 ## Contributing
 
-- **Fork the repository**.
-- **Create a new branch**:
+1. **Fork the repository**.
+
+2. **Create a new branch**:
    ```bash
    git checkout -b feature-branch
-- **Commit your changes**:
+   
+3. **Commit your changes**:
    ```bash
    git commit -m 'Add new feature'
-- **Push to the branch**:
+   
+4. **Push to the branch**:
    ```bash
    git push origin feature-branch
-- **Open a Pull Request**.
+   
+5. **Open a Pull Request**.
