@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
-from .utils import ExtractText, GenStudyMaterial, GenQuestions
-from .models import Chapter, User
 from django.contrib.auth import login, logout, authenticate
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.core.paginator import Paginator
 import json, random
+from .utils import ExtractText, GenStudyMaterial, GenQuestions
+from .models import Chapter, User
+from .validators import validate_password
 
 # Create your views here.
 
@@ -21,7 +22,6 @@ def index(request):
 
 @login_required
 def myChapters(request):
-
     if request.method == "PUT":
         data = json.loads(request.body.decode("utf-8"))
         try:
@@ -47,10 +47,10 @@ def myChapters(request):
         return JsonResponse({"success": True})
         
     sortBy = request.GET.get("sortBy", "created_at")
-    order = request.GET.get("order", "asc")
+    order = request.GET.get("order", "desc")
     pageNum = request.GET.get("page", 1)
 
-    if order == "desc":
+    if order == "asce":
         studMats = request.user.UserChapters.all().order_by(sortBy)
     else:
         studMats = request.user.UserChapters.all().order_by(f"-{sortBy}")
@@ -81,21 +81,27 @@ def registerUser(request):
         username = data.get("username")
         email = data.get("email")
         password = data.get("password")
+        
         if username and password and email:
+            try:
+                validate_password(password)
+            except Exception as e:
+                return JsonResponse({"success": False, "Error": str(e)})
+            
             try:
                 user = User.objects.create_user(
                     username=username, email=email, password=password
                 )
                 user.save()
                 login(request, user)
-            except IntegrityError as e:
+            except Exception as e:
                 if "username" in str(e):
                     return JsonResponse({"success": False, "Error": "Username already taken!"})
-                else:
+                elif "email" in str(e):
                     return JsonResponse({"success": False, "Error": "Email already in use!"})
-            except:
+                
                 return JsonResponse({"success": False, "Error": "Failed to register user."})
-            
+                
             return JsonResponse({"success": True})
         return JsonResponse({"success": False, "Error": "Fields cannot be left empty!"})
     return redirect("index")
@@ -146,6 +152,8 @@ def image2text(request):
             result = text
         else:
             return JsonResponse({"success": False, "Error": "No file uploaded"})
+        if len(result) < 1000:
+            return JsonResponse({"success": False, "Error": "Text too short."})
         return JsonResponse({"success": True, "text": result})
     return redirect("index")
 
@@ -185,7 +193,7 @@ def text2studMat(request):
         
         chapter = Chapter.objects.create(
             user=request.user,
-            OCRText=prompt,
+            OCRText=ogPrompt,
             title=json_studMat["title"],
             summary=json_studMat["summary"],
             notes=json_studMat["Notes"],

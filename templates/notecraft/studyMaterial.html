@@ -1,6 +1,6 @@
 {% extends 'notecraft/layout.html' %} {% load static %} {% block body %} 
 {% if studMat %}
-<div class="flex flex-col gap-10 px-5" id="studMatBlock">
+<div class="flex flex-col gap-20 px-5" id="studMatBlock">
     <div class="w-full flex justify-between border-b border-gray-300 pb-3">
         <button onclick="goBack()" class="bg-gray-600 hover:bg-gray-700 font-semibold rounded-md p-2 flex gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left stroke-white" width="25" height="25" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -18,42 +18,43 @@
             Start Test
         </button>
     </div>
-    <div class="text-xl text-center font-bold m-auto">
+
+    <div class="text-3xl text-center font-extrabold m-auto">
         <div class="px-3">{{studMat.title}}</div>
-        <div class="border border-black rounded my-2"></div>
     </div>
 
-    <div>
+    <section class="p-6 rounded-lg shadow-xl">
+        <h2 class="text-2xl font-semibold mb-4 text-gray-800">Summary</h2>
+        <p class="text-lg text-gray-700 leading-relaxed">{{studMat.summary}}</p>
+    </section>
 
-        <div>{{studMat.summary}}</div>
-    </div>
-
-    <div>
-        <div class="text-lg font-bold my-3">NOTES</div>
+    <div class="">
+        <div class="text-2xl font-semibold my-5">Important Notes</div>
         <ol class="flex flex-col gap-3 list-decimal list-inside">
             {% for note in studMat.notes %}
-                <li class="note-card bg-opacity-40 p-6 rounded-lg text-gray-700">
-                    {{note}}.
+                <li class="note-card text-md bg-opacity-40 p-4 px-5 rounded-lg text-gray-700">
+                    {{note}}
                 </li>
             {% endfor %}
         </ol>
     </div>
 
-    <div>
-        <div class="text-lg font-bold my-5 text-center">FLASH CARDS</div>
+    <div >
+        <div class="text-2xl font-semibold w-max mx-auto my-5">Flash Cards</div>
         <div class="flex flex-wrap gap-10 justify-center my-5">
             {% for key,value in studMat.flashcards.items %}
-            <div
-                class="h-48 w-52 min-h-max cursor-pointer select-none overflow-hidden"
-                onclick="flip(event)"
-            >
-                <div class="pointer-events-none font-semibold p-3 w-full h-full min-h-max border-2 border-blue-800 rounded-lg flex text-center justify-center items-center">{{key}}</div>
-                <div class="pointer-events-none hidden p-3 w-full h-full min-h-max bg-blue-800 text-white rounded-lg flex text-center justify-center items-center">{{value}}</div>
-            </div>
+                <div
+                    class="h-52 w-56 min-h-max cursor-pointer select-none overflow-hidden"
+                    onclick="flip(event)"
+                >
+                    <div class="pointer-events-none font-semibold p-3 w-full h-full min-h-max border-2 border-blue-800 rounded-lg flex text-center justify-center items-center">{{key}}</div>
+                    <div class="pointer-events-none hidden p-3 w-full h-full min-h-max bg-blue-800 text-white rounded-lg flex text-center justify-center items-center">{{value}}</div>
+                </div>
             {% endfor %}
         </div>
     </div>
 </div>
+
 <div id="testBlock" class="px-5 flex flex-col gap-4 hidden">
     <div class="ml-auto">
         <button onclick="switchTostudMat()" class="bg-gray-500 hover:bg-gray-600 font-semibold rounded-md p-2 flex gap-1">

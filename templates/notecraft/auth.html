@@ -251,6 +251,9 @@
                             required
                         />
                     </div>
+
+                    <i id="registrationError" class="text-red-500 text-sm font-italic list-disc list-inside px-4"></i >
+
                     <input
                         type="submit"
                         class="self-center cursor-pointer bg-blue-500 py-2 px-5 my-2 rounded hover:bg-blue-600 text-white font-semibold"
@@ -335,6 +338,9 @@
                             required
                         />
                     </div>
+
+                    <i id="loginError" class="text-red-500 text-sm font-italic list-disc list-inside px-4"></i >
+
                     <input
                         type="submit"
                         class="self-center cursor-pointer bg-blue-500 py-2 px-5 my-2 rounded hover:bg-blue-600 text-white font-semibold"
@@ -350,6 +356,8 @@
             const regSection = document.querySelector("#regSection");
             const logSection = document.querySelector("#logSection");
             const welcomeText = document.querySelector("#welcomeText");
+            const loginError = document.querySelector("#loginError");
+            const registrationError = document.querySelector("#registrationError");
 
             function registerUser(event) {
                 event.preventDefault();
@@ -381,11 +389,11 @@
                             if (data.success == true) {
                                 window.location.href = next;
                             } else {
-                                alert(data.Error);
+                                registrationError.innerText = data.Error;
                             }
                         });
                 } else {
-                    alert("Passwords do not match");
+                    registrationError.innerText = "Passwords do not match!";
                 }
                 event.target.disabled = false;
             }
@@ -417,7 +425,7 @@
                         if (data.success == true) {
                             window.location.href = next;
                         } else {
-                            alert(data.Error);
+                            loginError.innerText = data.Error;
                         }
                     });
                 event.target.disabled = false;

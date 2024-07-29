@@ -42,7 +42,7 @@ def GenStudyMaterial(prompt):
         }
     ])
 
-    convo.send_message(prompt)
+    convo.send_message(f"Here is the body of text: \n'{prompt}'")
     return(convo.last.text)
 
 def GenQuestions(prompt):
@@ -61,7 +61,7 @@ def GenQuestions(prompt):
                 MCQ: Questions with multiple choices and their correct/incorrect answers.
                 TOF: Questions with two choices i.e. True and false.
 
-                Remember to provide proper choices in MCQ and don't use any Sign numbers like "1", "a", "A", "i", "Question1" or "choice1" when writing questions or choices. The "Question" and "choice" in the output format needs to be replaced with the actual questions and choices. Also make sure the output is strictly in proper json format. This is compulosry. Create exactly 7 MCQs and 3 TOFs. Abide by this number, it is very important. Never provide true/false questions in MCQ. All the MCQ questions must have 4 choices. Lastly, don't wrap the output in ```json``` this way. Just directly provide the json data.
+                Remember to provide proper choices in MCQ and don't use any Sign numbers like "1", "a", "A", "i", "Question1" or "choice1" when writing questions or choices. The "Question" and "choice" in the output format needs to be replaced with the actual questions and choices. Also make sure the output is strictly in proper json format. This is compulosry. Create exactly 7 MCQs and 3 TOFs. Abide by this number, it is very important. Never provide true/false questions in MCQ. All the MCQ questions must have 4 choices and only 1 correct answer. A single mcq question can't have 2  or more correct answers. Lastly, don't wrap the output in ```json``` this way. Just directly provide the json data.
                 Now, proceed with reading and understanding the content of the text, correcting any errors, and preparing the JSON output data accordingly.
             ''']
         },
@@ -71,5 +71,5 @@ def GenQuestions(prompt):
         }
     ])
 
-    convo.send_message(prompt)
+    convo.send_message(f"Here is the body of text: \n'{prompt}'")
     return(convo.last.text)

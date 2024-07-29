@@ -1,139 +1,165 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <style>
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-            @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&display=swap');
-            .font-inter {
-                font-family: 'Inter', sans-serif;
-            }
-            .font-instrument {
-                font-family: 'Instrument Sans', sans-serif;
-            }
-            .inner-shadow-left{
-                box-shadow: inset -10px 0px 10px -10px rgba(0, 0, 0, 0.1);
-            }
-            .note-card {
-                background: linear-gradient(150deg, #f2f5f8b6 50%, #e6ebff 100%);
-            }
-        </style>
-    </head>
-    <body class="font-inter relative">
-        <nav
-            class="sticky bg-white bg-opacity-5 backdrop-blur-md font-inter top-0 left-0 w-full 2xl:px-44 xl:px-32 lg:px-24 sm:px-20 px-10 py-6 flex justify-between items-center transition-all duration-200 ease-in z-10"
-        >
-            <a href="{% url 'index' %}" id="logoIcon" class="flex items-center gap-1 relative overflow-hidden">
-                <svg
-                    version="1.1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    class="thumbnail-icon w-5 transition-all duration-200 ease-in"
-                    viewBox="26 0 148.00001525878906 200"
-                >
-                    <g
-                        data-paper-data='{"fillRule":"nonzero","initialText":"N","selectedEffects":{"container":"","transformation":"","pattern":""},"bounds":{"x":217.44286509218176,"y":115,"width":115.11426981563648,"height":155.56036461699193},"isIcon":"true","iconType":"initial","iconStyle":"standalone","rawInitialId":572}'
-                    >
-                        <path
-                            d="M174,4.85714c0,-2.57143 -2.28571,-4.85714 -4.85714,-4.85714h-16.28571c-12.28571,0 -22.28571,10 -22.28571,22.28571v40.57143l-56.85714,-56.85714c-4,-3.71429 -9.42857,-6 -15.14286,-6h-27.71429c-2.57143,0 -4.85714,2.28571 -4.85714,4.85714v5.71429c0,5.71429 2.28571,11.14286 6,15.14286l114,114c2.85714,2.85714 6.85714,4.57143 11.42857,4.57143c9.14286,0 16.57143,-7.42857 16.57143,-16.57143zM26,195.14286c0,2.57143 2.28571,4.85714 4.85714,4.85714h16.28571c12.28571,0 22.28571,-10 22.28571,-22.28571v-40.57143l56.85714,56.85714c4,3.71429 9.42857,6 15.14286,6h27.71429c2.57143,0 4.85714,-2.28571 4.85714,-4.85714v-5.71429c0,-5.71429 -2.28571,-11.14286 -6,-15.14286l-114,-114c-2.85714,-2.85714 -6.85714,-4.57143 -11.42857,-4.57143c-9.14286,0 -16.57143,7.42857 -16.57143,16.57143z"
-                            fill-rule="nonzero"
-                        ></path>
-                    </g>
-                </svg>
-                <div
-                    id="logoText"
-                    class="text-xl font-bold tracking-widest select-none"
-                >
-                    OTECRAFT
-                </div>
-            </a>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<style>
+			@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+			@import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&display=swap");
+			.font-inter {
+				font-family: "Inter", sans-serif;
+			}
+			.font-instrument {
+				font-family: "Instrument Sans", sans-serif;
+			}
+			.inner-shadow-left {
+				box-shadow: inset -10px 0px 10px -10px rgba(0, 0, 0, 0.1);
+			}
+			.note-card {
+				background: linear-gradient(150deg, #f2f5f8b6 50%, #e6ebff 100%);
+			}
+		</style>
+	</head>
+	<body class="font-inter relative">
+		<nav
+			class="sticky bg-white bg-opacity-5 backdrop-blur-md font-inter top-0 left-0 w-full 2xl:px-44 xl:px-32 lg:px-24 sm:px-20 px-10 py-6 flex justify-between items-center transition-all duration-200 ease-in z-30"
+		>
+			<a
+				href="{% url 'index' %}"
+				id="logoIcon"
+				class="flex items-center gap-1 relative overflow-hidden"
+			>
+				<svg
+					version="1.1"
+					xmlns="http://www.w3.org/2000/svg"
+					xmlns:xlink="http://www.w3.org/1999/xlink"
+					class="thumbnail-icon w-5 transition-all duration-200 ease-in"
+					viewBox="26 0 148.00001525878906 200"
+				>
+					<g
+						data-paper-data='{"fillRule":"nonzero","initialText":"N","selectedEffects":{"container":"","transformation":"","pattern":""},"bounds":{"x":217.44286509218176,"y":115,"width":115.11426981563648,"height":155.56036461699193},"isIcon":"true","iconType":"initial","iconStyle":"standalone","rawInitialId":572}'
+					>
+						<path
+							d="M174,4.85714c0,-2.57143 -2.28571,-4.85714 -4.85714,-4.85714h-16.28571c-12.28571,0 -22.28571,10 -22.28571,22.28571v40.57143l-56.85714,-56.85714c-4,-3.71429 -9.42857,-6 -15.14286,-6h-27.71429c-2.57143,0 -4.85714,2.28571 -4.85714,4.85714v5.71429c0,5.71429 2.28571,11.14286 6,15.14286l114,114c2.85714,2.85714 6.85714,4.57143 11.42857,4.57143c9.14286,0 16.57143,-7.42857 16.57143,-16.57143zM26,195.14286c0,2.57143 2.28571,4.85714 4.85714,4.85714h16.28571c12.28571,0 22.28571,-10 22.28571,-22.28571v-40.57143l56.85714,56.85714c4,3.71429 9.42857,6 15.14286,6h27.71429c2.57143,0 4.85714,-2.28571 4.85714,-4.85714v-5.71429c0,-5.71429 -2.28571,-11.14286 -6,-15.14286l-114,-114c-2.85714,-2.85714 -6.85714,-4.57143 -11.42857,-4.57143c-9.14286,0 -16.57143,7.42857 -16.57143,16.57143z"
+							fill-rule="nonzero"
+						></path>
+					</g>
+				</svg>
+				<div
+					id="logoText"
+					class="text-xl font-bold tracking-widest select-none"
+				>
+					OTECRAFT
+				</div>
+			</a>
 
-            <div class="md:flex hidden gap-7 text-xs font-semibold tracking-widest transition-all">
-                <a href="{% url 'index' %}" class="hover:text-blue-500 duration-200">HOME</a>
-                {% if user.is_authenticated %}
-                    <a href="{% url 'myChapters' %}" class="hover:text-blue-500 duration-200"
-                        >STUDY MATERIALS</a
-                    >
-                    <form
-                        action="{% url 'logout' %}"
-                        method="post"
-                        class="hover:text-blue-500 duration-200"
-                    >
-                        {% csrf_token %}
-                        <input
-                            type="submit"
-                            value="LOGOUT"
-                            class="cursor-pointer"
-                        />
-                    </form>
-                {% else %} 
-                    <a href="/myChapters" class="font-semibold hover:text-blue-500 duration-200">ABOUT</a>
-                    <a href="{% url 'myChapters' %}" class="font-semibold hover:text-blue-500 duration-200">CONTACT</a>
-                    <a href="{% url 'myChapters' %}" class="font-semibold hover:text-blue-500 duration-200">LOGIN</a>
-                {% endif %}
-            </div>
+			<div
+				class="md:flex hidden gap-7 text-xs font-semibold tracking-widest transition-all"
+			>
+				<a href="{% url 'index' %}" class="hover:text-blue-500 duration-200"
+					>HOME</a
+				>
+				{% if user.is_authenticated %}
+				<a
+					href="{% url 'myChapters' %}"
+					class="hover:text-blue-500 duration-200"
+					>STUDY MATERIALS</a
+				>
+				<form
+					action="{% url 'logout' %}"
+					method="post"
+					class="hover:text-blue-500 duration-200"
+				>
+					{% csrf_token %}
+					<input type="submit" value="LOGOUT" class="cursor-pointer" />
+				</form>
+				{% else %}
+				<a
+					href="/myChapters"
+					class="font-semibold hover:text-blue-500 duration-200"
+					>ABOUT</a
+				>
+				<a
+					href="{% url 'myChapters' %}"
+					class="font-semibold hover:text-blue-500 duration-200"
+					>CONTACT</a
+				>
+				<a
+					href="{% url 'myChapters' %}"
+					class="font-semibold hover:text-blue-500 duration-200"
+					>LOGIN</a
+				>
+				{% endif %}
+			</div>
 
-            <a class="md:hidden stroke-black cursor-pointer" id="menu">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M4 6l16 0" />
-                    <path d="M4 12l16 0" />
-                    <path d="M4 18l16 0" />
-                </svg>
-            </a>
-        </nav>
+			<a class="md:hidden stroke-black cursor-pointer" id="menu">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="icon icon-tabler icon-tabler-menu-2"
+					width="28"
+					height="28"
+					viewBox="0 0 24 24"
+					stroke-width="1.5"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+					<path d="M4 6l16 0" />
+					<path d="M4 12l16 0" />
+					<path d="M4 18l16 0" />
+				</svg>
+			</a>
+		</nav>
 
-        <div class="bg-white fixed right-0 top-0 h-screen w-0 flex flex-col gap-7 text-xs font-semibold tracking-widest py-28 overflow-scroll transition-all duration-200 ease-in md:hidden" id="sidebar">
-            <a href="{% url 'index' %}" class="hover:text-blue-500 w-max">HOME</a>
-            {% if user.is_authenticated %}
-                <a href="{% url 'myChapters' %}" class="hover:text-blue-500 w-max"
-                    >STUDY MATERIALS</a
-                >
-                <form
-                    action="{% url 'logout' %}"
-                    method="post"
-                    class="hover:text-blue-500"
-                >
-                    {% csrf_token %}
-                    <input
-                        type="submit"
-                        value="LOGOUT"
-                        class="cursor-pointer w-max"
-                    />
-                </form>
-            {% else %}
-                <a href="#" class="font-semibold hover:text-blue-500 w-max">ABOUT</a>
-                <a href="#" class="font-semibold hover:text-blue-500 w-max">CONTACT</a>
-                <a href="#" class="font-semibold hover:text-blue-500 w-max">LOGIN</a>
-            {% endif %}
-        </div>
+		<div
+			class="bg-white fixed right-0 top-0 h-screen w-0 flex flex-col gap-7 text-xs font-semibold tracking-widest py-28 overflow-scroll transition-all duration-200 ease-in md:hidden z-20"
+			id="sidebar"
+		>
+			<a href="{% url 'index' %}" class="hover:text-blue-500 w-max">HOME</a>
+			{% if user.is_authenticated %}
+			<a href="{% url 'myChapters' %}" class="hover:text-blue-500 w-max"
+				>STUDY MATERIALS</a
+			>
+			<form
+				action="{% url 'logout' %}"
+				method="post"
+				class="hover:text-blue-500"
+			>
+				{% csrf_token %}
+				<input type="submit" value="LOGOUT" class="cursor-pointer w-max" />
+			</form>
+			{% else %}
+			<a href="#" class="font-semibold hover:text-blue-500 w-max">ABOUT</a>
+			<a href="#" class="font-semibold hover:text-blue-500 w-max">CONTACT</a>
+			<a href="#" class="font-semibold hover:text-blue-500 w-max">LOGIN</a>
+			{% endif %}
+		</div>
 
-        <div class="p-5">{% block body %} {% endblock %}</div>
-    
-        <script>
-            const nav = document.querySelector("nav");
-            const logo = document.querySelector("#logoIcon");
-            const logoText = document.querySelector("#logoText");
-            const menu = document.querySelector("#menu");
-            const sidebar = document.querySelector("#sidebar");
-            window.addEventListener("scroll", () => {
-                if (window.scrollY > 0) {
-                    nav.classList.add("shadow-md", "bg-blue-600");
-                } else {
-                    nav.classList.remove("shadow-md", "bg-blue-600");
-                }
-            });
+		<div class="p-5">{% block body %} {% endblock %}</div>
 
-            menu.onclick = () => {
-                sidebar.classList.toggle("w-full");
-                sidebar.classList.toggle("w-0");
-                sidebar.classList.toggle("sm:px-20");
-                sidebar.classList.toggle("px-10");
-            };
-        </script>
-    </body>
+		<script>
+			const nav = document.querySelector("nav");
+			const logo = document.querySelector("#logoIcon");
+			const logoText = document.querySelector("#logoText");
+			const menu = document.querySelector("#menu");
+			const sidebar = document.querySelector("#sidebar");
+			window.addEventListener("scroll", () => {
+				if (window.scrollY > 0) {
+					nav.classList.add("shadow-md", "bg-blue-600");
+				} else {
+					nav.classList.remove("shadow-md", "bg-blue-600");
+				}
+			});
+
+			menu.onclick = () => {
+				sidebar.classList.toggle("w-full");
+				sidebar.classList.toggle("w-0");
+				sidebar.classList.toggle("sm:px-20");
+				sidebar.classList.toggle("px-10");
+			};
+		</script>
+	</body>
 </html>
