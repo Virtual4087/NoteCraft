@@ -171,7 +171,7 @@ def text2studMat(request):
         
         while count<4:
             try:
-                studMat = GenStudyMaterial(prompt, "gemini")
+                studMat = GenStudyMaterial(prompt, "gemini") #Replace gemini with the API you are using for generating study aid
                 json_studMat = json.loads(studMat)
                 
                 if len(json_studMat["FC"]) < 3:
@@ -220,7 +220,7 @@ def test(request):
 
         while count < 4:
             try:
-                questions = GenQuestions(prompt, "gemini")
+                questions = GenQuestions(prompt, "gemini")  #Replace gemini with the API you are using for generating questions
                 json_questions = json.loads(questions)
                 mcq_key = next(iter(json_questions["MCQ"]))
                 tof_key = next(iter(json_questions["TOF"]))
