@@ -1,4 +1,6 @@
-{% extends 'notecraft/layout.html' %} {% load static %} {% block body %} 
+{% extends 'notecraft/layout.html' %} {% load static %}
+{% block title %} {{studMat.title}} {% endblock %}
+{% block body %} 
 {% if studMat %}
 <div class="flex flex-col gap-20 px-5" id="studMatBlock">
     <div class="w-full flex justify-between border-b border-gray-300 pb-3">
@@ -25,7 +27,7 @@
 
     <section class="p-6 rounded-lg shadow-xl">
         <h2 class="text-2xl font-semibold mb-4 text-gray-800">Summary</h2>
-        <p class="text-lg text-gray-700 leading-relaxed">{{studMat.summary}}</p>
+        <p class="text-md text-gray-700 leading-relaxed">{{studMat.summary}}</p>
     </section>
 
     <div class="">

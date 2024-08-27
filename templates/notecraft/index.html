@@ -1,8 +1,9 @@
-{% extends 'notecraft/layout.html' %} {% block body %}
-
+{% extends 'notecraft/layout.html' %}
+{% block title %} Home {% endblock %}
+{% block body %}
 <div class="w-full flex flex-col items-center lg:my-16 md:my-13 my-10 gap-3">
     <div class="xl:text-5xl lg:text-4xl text-3xl font-bold tracking-wide text-center">
-        Transform Images and PDFs into study materials
+        Transform Images and PDFs into study aids
     </div>
     <div class="xl:text-3xl lg:text-2xl text-xl font-bold text-blue-700 text-center">Study Smarter Not Harder</div>
 </div>
@@ -212,7 +213,7 @@
     }
 
     function generateStudMat(prompt){
-        submitButton.value = "Generating Study Material...";
+        submitButton.value = "Generating Study Aid...";
         const form = submitButton.form;
         fetch('/text2studMat', {
             method: "POST",

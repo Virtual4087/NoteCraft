@@ -8,7 +8,7 @@
                 name="viewport"
                 content="width=device-width, initial-scale=1.0"
             />
-            <title>Document</title>
+            <title>Notecraft - Authentication</title>
             <script src="https://cdn.tailwindcss.com"></script>
             <style>
                 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
@@ -43,7 +43,7 @@
                     </div>
                     <div class="tracking-wide xl:text-lg">
                         Our platform transforms your textbook PDFs and images into
-                        comprehensive study materials. Join us at Notecraft and
+                        comprehensive study aids. Join us at Notecraft and
                         elevate your study game with innovative tools designed for
                         today's learners.
                         <span class="font-semibold">STUDY SMARTER NOT HARDER!</span>
@@ -54,7 +54,7 @@
 
         <div
             id="authentication"
-            class="xl:w-2/5 md:w-1/2 flex items-center relative"
+            class="xl:w-2/5 md:w-1/2 w-full flex items-center relative"
         >
             <div
                 class="absolute top-0 left-0 flex items-center gap-1 overflow-hidden lg:py-12 lg:px-20 py-8 px-10"
@@ -81,7 +81,7 @@
             </div>
 
             <div
-                class="absolute top-1/3 lg:top-1/4 left-0 w-full lg:px-20 px-10 flex flex-col gap-6 rounded overflow-hidden"
+                class="absolute top-1/4 left-0 w-full lg:px-20 px-10 flex flex-col gap-6 rounded overflow-hidden"
             >
                 <div id="welcomeText" class="text-3xl font-bold tracking-wider text-center">
                     Join Us Today!
@@ -399,7 +399,6 @@
             }
 
             function loginUser(event) {
-                console.log("{{csrf_token}}")
                 event.preventDefault();
                 event.target.disabled = true;
                 const uname = document.querySelector("#logUname");
@@ -425,6 +424,7 @@
                         if (data.success == true) {
                             window.location.href = next;
                         } else {
+                            console.log(data.Error)
                             loginError.innerText = data.Error;
                         }
                     });
