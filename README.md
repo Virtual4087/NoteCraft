@@ -64,7 +64,7 @@ The complexity of Notecraft arises from several aspects:
    python manage.py makemigrations notecraft
    python manage.py migrate
    
-6. **Setting Up the `.env` File**
+6. **Set Up the `.env` File**
 
    To configure your environment variables, create a `.env` file in the root directory of your project and add the following keys:
    
