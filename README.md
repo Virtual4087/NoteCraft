@@ -1,4 +1,4 @@
-# Notecraft
+# NoteCraft
 
 Notecraft is an innovative web application designed to transform users' images and PDFs of their notes into structured, comprehensive study materials. The platform leverages OCR technology to extract text from images and PDFs and utilizes AI to generate summaries, notes, flashcards, and interactive tests. This application aims to simplify the study process by providing a seamless and efficient way for users to create study aids from their existing notes.
 
