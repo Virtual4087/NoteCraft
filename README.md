@@ -39,8 +39,8 @@ The complexity of Notecraft arises from several aspects:
 
 - **Backend**: Django
 - **Frontend**: HTML, CSS, JavaScript, Tailwind CSS
-- **Database**: MySQL
-- **APIs**: OCR Space API, ChatGPT API
+- **Database**: SQLite
+- **APIs**: OCR Space API, Openai API, Gemini API, Antrhopic API
 - **Version Control**: Git
 
 ## Installation
@@ -61,14 +61,36 @@ The complexity of Notecraft arises from several aspects:
    
 5. **Set up the database**:
    ```bash
-   python manage.py makemigrations
+   python manage.py makemigrations notecraft
    python manage.py migrate
    
-6. **Create a superuser**:
-   ```bash
-   python manage.py createsuperuser
+6. **Setting Up the `.env` File**
+
+   To configure your environment variables, create a `.env` file in the root directory of your project and add the following keys:
    
-7. **Run the server**:
+   ```plaintext
+   DJANGO_SECRET_KEY=''
+   OCR_API_KEY='' # Can be obtained for free from OCR.space
+   AI_API_KEY=''  # Use either GEMINI_API_KEY, ANTHROPIC_API_KEY, or OPENAI_API_KEY
+   ```
+
+   ### Required Keys:
+   
+   - **DJANGO_SECRET_KEY**: The secret key for your Django project.
+   - **OCR_API_KEY**: API key from OCR.space, used for Optical Character Recognition (OCR).
+   - **AI_API_KEY**: You must provide one API key for an AI service (choose either **GEMINI_API_KEY**, **ANTHROPIC_API_KEY**, or **OPENAI_API_KEY**).
+
+   ### Optional Configuration:
+   
+   You can switch between different AI services by navigating to the appropriate lines in the code:
+
+   - To change the AI service for generating study aids: Modify [here](https://github.com/Virtual4087/NoteCraft/blob/main/notecraft/views.py#L174).
+   - To change the AI service for generating test questions: Modify [here](https://github.com/Virtual4087/NoteCraft/blob/main/notecraft/views.py#L223).
+     
+   If you want to change the model within the same AI service, navigate to the api_services directory in the notecraft app directory and adjust the model 
+   configuration for each service individually.
+   
+8. **Run the server**:
    ```bash
    python manage.py runserver
 
