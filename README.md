@@ -50,8 +50,13 @@ In summary, Notecraft stands apart from other projects because of its specific f
    
 2. **Set up a virtual environment**:
    ```bash
-   python3 -m venv venv
-   source venv/bin/activate
+   python -m venv .venv
+
+   # For Git bash:
+   source .venv/Scripts/activate
+
+   # For Powershell:
+   .venv\\Scripts\\activate   
    
 4. **Install dependencies**:
    ```bash
@@ -69,7 +74,11 @@ In summary, Notecraft stands apart from other projects because of its specific f
    ```plaintext
    DJANGO_SECRET_KEY=''
    OCR_API_KEY='' # Can be obtained for free from OCR.space
-   AI_API_KEY=''  # Use either GEMINI_API_KEY, ANTHROPIC_API_KEY, or OPENAI_API_KEY
+
+   #(Use any one of these)
+   GEMINI_API_KEY=''
+   ANTHROPIC_API_KEY=''
+   OPENAI_API_KEY=''
    ```
 
    ### Required Keys:
